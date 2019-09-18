@@ -36,9 +36,58 @@ public class Matriks {
                 } else {
                     System.out.print(M.element[i][j] + " ");
                 }
-            }
-            
+            }  
         }
     }
    
+
+    public Matriks CopyMatriks() {
+        Matriks CopyM = new Matriks(this.baris, this.kolom);
+
+        for (int i = 0; i < this.baris; i++) {
+            for (int j = 0; j < this.kolom; j++) {
+                CopyM.element[i][j] = this.element[i][j];
+            }
+        }
+
+        return CopyM;
+    }
+
+    public float DeterminanGauss() {
+        Matriks tempM = this.CopyMatriks();
+
+        for (int brs = 1; brs < this.baris; brs++) {
+            for (int kol = 0; kol < brs; kol++) {
+                float temp = tempM.element[brs][kol];
+                for (int i = 0; i < this.kolom; i++) {
+                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol]);
+                    Matriks.TulisMatriks(tempM);
+                }
+            }
+        }
+
+        float det = tempM.element[0][0];
+
+        for (int j = 1; j < this.baris; j++) {
+            det *= tempM.element[j][j];
+        }
+
+        return det;
+    }
+
+    public static void SPLGauss(Matriks M) {
+        Matriks tempM = M.CopyMatriks();
+
+        for (int brs = 1; brs < M.baris; brs++) {
+            for (int kol = 0; kol < brs; kol++) {
+                float temp = tempM.element[brs][kol];
+                for (int i = 0; i < (M.kolom - 1); i++) {
+                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol]);
+                    System.out.println("Tahap")
+                    Matriks.TulisMatriks(tempM);
+                }
+            }
+        }
+    }
+    
 }
