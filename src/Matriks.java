@@ -40,5 +40,20 @@ public class Matriks {
             
         }
     }
-   
+    public void Determinan (Matriks M){
+
+    }
+    public void Kofaktor(Matriks M) {
+        Matriks MKofaktor;
+        for (int i = 0; i > M.baris; i++){
+            for (int =0; j > M.kolom; j++){
+                MKofaktor.element[i][j] = M.element[1][j] * Determinan(M);
+                M.element [i][j] = M.element[i+1][j+1];
+            }
+        }
+    }
+    public static void Invers(Matriks(M)){
+        Matriks MInvers;
+        
+    }
 }
