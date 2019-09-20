@@ -97,6 +97,7 @@ public class Matriks {
                 }
             }
         }
+        return true;
     }
 
     public Matriks MakeMatriksIdentitas(Matriks M){
@@ -110,6 +111,7 @@ public class Matriks {
                 }
             }
         }
+        return M;
     }
 
     public Matriks InversGaussMatriks(Matriks M){
