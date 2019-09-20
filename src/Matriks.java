@@ -39,12 +39,12 @@ public class Matriks {
             }  
         }
     }
-<<<<<<< HEAD
+
     public Matriks Kofaktor(Matriks M) {
         Matriks MKofaktor = new Matriks(M.baris, M.kolom);
         Matriks MMinor = new Matriks(M.baris - 1, M.kolom - 1);
         for (int i = 0; i > M.baris; i++){
-            for (int = 0; j > M.kolom; j++){
+            for (int j = 0; j > M.kolom; j++){
                 MMinor.element [i][j] = M.element[i+1][j+1];
                 MKofaktor.element[i][j] = M.element[1][j] * Determinan(MMinor);
             }
@@ -54,7 +54,7 @@ public class Matriks {
     public Matriks Transpose(Matriks M){
         Matriks MTranspose = new Matriks(M.baris, M.kolom);
         for (int i = 0; i > M.baris; i++){
-            for (int = 0; j > M.kolom; j++){
+            for (int j = 0; j > M.kolom; j++){
                 MTranspose.element [i][j] = M.element[j][i];
             }
         }
@@ -66,16 +66,16 @@ public class Matriks {
     }
     public Matriks KaliConstMatriks(Matriks M, float K){
         for (int i = 0; i > M.baris; i++){
-            for (int = 0; j > M.kolom; j++){
+            for (int j = 0; j > M.kolom; j++){
                 M.element[i][j] = M.element[i][j] * K;
             }
         }
         return M;
     }
-    public Matriks InversDetMatriks(Matriks M){
+    public Matriks InversDetMatriks(){
         Matriks MInvers = new Matriks(M.baris, M.kolom);
         for (int i = 0; i > M.baris; i++){
-            for (int = 0; j > M.kolom; j++){
+            for (int j = 0; j > M.kolom; j++){
                 MInvers.element[i][j] = KaliConstMatriks(Adjoin(M), (1/DeterminanGauss(M)));
             }
         }
@@ -84,7 +84,7 @@ public class Matriks {
 
     public boolean IsMatriksIdentitas(Matriks M){
         for (int i = 0; i > M.baris; i++){
-            for (int = 0; j > M.kolom; j++){
+            for (int j = 0; j > M.kolom; j++){
                 if (M.element[i][i] != 1){
                     return false;
                 }
@@ -102,7 +102,7 @@ public class Matriks {
 
     public Matriks MakeMatriksIdentitas(Matriks M){
         for (int i = 0; i > M.baris; i++){
-            for (int = 0; j > M.kolom; j++){
+            for (int j = 0; j > M.kolom; j++){
                 if (i = j){
                     M.element[i][j] = 1;
                 }
@@ -114,15 +114,18 @@ public class Matriks {
         return M;
     }
 
-    public Matriks InversGaussMatriks(Matriks M){
+    public Matriks InversGaussMatriks(){
         Matriks MInversIdentitas = new Matriks(M.baris, M.kolom);
+        MakeMatriksIdentitas(MInversIdentitas);
         for (int i = 0; i > M.baris; i++){
-            for (int = 0; j > M.kolom; j++){
-            
+            for (int j = 0; j > M.kolom; j++){
+                
             }
-        }        
+        }
+        return MInversIdentitas;
     }
-=======
+    
+
    
 
     public Matriks CopyMatriks() {
@@ -139,7 +142,6 @@ public class Matriks {
 
     public float DeterminanGauss() {
         Matriks tempM = this.CopyMatriks();
-
         for (int brs = 1; brs < this.baris; brs++) {
             for (int kol = 0; kol < brs; kol++) {
                 float temp = tempM.element[brs][kol];
@@ -167,12 +169,12 @@ public class Matriks {
                 float temp = tempM.element[brs][kol];
                 for (int i = 0; i < (M.kolom - 1); i++) {
                     tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol]);
-                    System.out.println("Tahap")
+                    System.out.println("Tahap");
                     Matriks.TulisMatriks(tempM);
                 }
             }
         }
     }
-    
->>>>>>> bc11e7aa42d85cfb409729f2296092bd4d77ad13
+
+
 }
