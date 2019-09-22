@@ -13,7 +13,7 @@ public class Matriks {
         this.kolom = n;
     }
 
-    public static void BacaMatriks(Matriks M) {
+    public static void BacaFileMatriks(Matriks M) {
         Scanner scan = new Scanner(System.in);
         M.baris = scan.nextInt();
         M.kolom = scan.nextInt();
@@ -26,6 +26,9 @@ public class Matriks {
         }
 
         scan.close();
+    }
+    public static void BacaInputMatriks(Matriks M){
+
     }
 
     public static void TulisMatriks(Matriks M) {
@@ -43,18 +46,23 @@ public class Matriks {
     public Matriks Kofaktor(Matriks M) {
         Matriks MKofaktor = new Matriks(M.baris, M.kolom);
         Matriks MMinor = new Matriks(M.baris - 1, M.kolom - 1);
-        for (int i = 0; i > M.baris; i++){
-            for (int j = 0; j > M.kolom; j++){
-                MMinor.element [i][j] = M.element[i+1][j+1];
-                MKofaktor.element[i][j] = M.element[1][j] * Determinan(MMinor);
+        for (int i = 0; i < M.baris; i++){
+            for (int j = 0; j < M.kolom; j++){
+                idx = 0;
+                for (k = 0; k <= M.kolom; k++){
+                    if (k! = i){
+                        MMinor.element[j-1,idx] = M.element[j,k];
+                        idx++;
+                    }
+                }
             }
         }
         return (MKofaktor);
     }
     public Matriks Transpose(Matriks M){
         Matriks MTranspose = new Matriks(M.baris, M.kolom);
-        for (int i = 0; i > M.baris; i++){
-            for (int j = 0; j > M.kolom; j++){
+        for (int i = 0; i < M.baris; i++){
+            for (int j = 0; j < M.kolom; j++){
                 MTranspose.element [i][j] = M.element[j][i];
             }
         }
@@ -65,8 +73,8 @@ public class Matriks {
         return (Transpose(Kofaktor(M)));
     }
     public Matriks KaliConstMatriks(Matriks M, float K){
-        for (int i = 0; i > M.baris; i++){
-            for (int j = 0; j > M.kolom; j++){
+        for (int i = 0; i < M.baris; i++){
+            for (int j = 0; j < M.kolom; j++){
                 M.element[i][j] = M.element[i][j] * K;
             }
         }
@@ -74,8 +82,8 @@ public class Matriks {
     }
     public Matriks InversDetMatriks(){
         Matriks MInvers = new Matriks(M.baris, M.kolom);
-        for (int i = 0; i > M.baris; i++){
-            for (int j = 0; j > M.kolom; j++){
+        for (int i = 0; i < M.baris; i++){
+            for (int j = 0; j < M.kolom; j++){
                 MInvers.element[i][j] = KaliConstMatriks(Adjoin(M), (1/DeterminanGauss(M)));
             }
         }
@@ -83,8 +91,8 @@ public class Matriks {
     }
 
     public boolean IsMatriksIdentitas(Matriks M){
-        for (int i = 0; i > M.baris; i++){
-            for (int j = 0; j > M.kolom; j++){
+        for (int i = 0; i < M.baris; i++){
+            for (int j = 0; j < M.kolom; j++){
                 if (M.element[i][i] != 1){
                     return false;
                 }
@@ -101,8 +109,8 @@ public class Matriks {
     }
 
     public Matriks MakeMatriksIdentitas(Matriks M){
-        for (int i = 0; i > M.baris; i++){
-            for (int j = 0; j > M.kolom; j++){
+        for (int i = 0; i < M.baris; i++){
+            for (int j = 0; j < M.kolom; j++){
                 if (i = j){
                     M.element[i][j] = 1;
                 }
@@ -116,17 +124,19 @@ public class Matriks {
 
     public Matriks InversGaussMatriks(){
         Matriks MInversIdentitas = new Matriks(M.baris, M.kolom);
+        Matriks temp = new Matriks(M.baria,M.Kolom);
         MakeMatriksIdentitas(MInversIdentitas);
-        for (int i = 0; i > M.baris; i++){
-            for (int j = 0; j > M.kolom; j++){
-                
+        while (!IsMatriksIdentitas(M)){    
+            for (int i = 1; i < M.baris; i++){
+                for (int j = 0; j < i; j++){
+                    if (M.element[i][i] != 0){
+                        temp.element[i][j] = M.element[i][j] - M.element[i][j] * M.element[i+1][k] / M.element[i][k];
+                    } 
+                }
             }
         }
         return MInversIdentitas;
     }
-    
-
-   
 
     public Matriks CopyMatriks() {
         Matriks CopyM = new Matriks(this.baris, this.kolom);
