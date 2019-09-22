@@ -249,11 +249,29 @@ public class Matriks {
     }
 
     public static void CramersRule (Matriks M) {
-        float [] b = new int [M.baris];
-        for (int bar=0; bar<M.baris; bar--) {
-            b[i] = M.element[i][M.kolom];
+        float [] b = new float [M.baris];
+        float [] SolusiX = new float [M.baris];
+        Matriks NewM = new Matriks(this.baris; this.kolom-1);
+        Matriks tempM = new Matriks(NewM.baris; NewM.kolom);
+
+        for (int bar=0; bar<M.baris; bar--) { //memindahkan element2 b pada M dalam array baru
+            b[i] = M.element[i][M.kolom-1];
         }
 
+        for (int i=0; i<M.baris; i++) { //copy element M tanpa kolom b
+            for (int j=0; j<M.kolom-1; j++) {
+                NewM.element[i][j] = M.element[i][j];
+            }
+        }
 
+        for (i=0; i<NewM.kolom; i++) {
+            tempM = NewM.CopyMatriks();
+            for (int j=0; j<NewM.baris; j++) {
+                tempM.element[j][i] = b[j];
+            }
+            SolusiX[i] = Matriks.DetCofactor(tempM)/Matriks.DetCofactor(NewM);
+        }
+
+        //Print nya belum
     }
 }
