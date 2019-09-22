@@ -124,7 +124,7 @@ public class Matriks {
 
     public Matriks InversGaussMatriks(){
         Matriks MInversIdentitas = new Matriks(M.baris, M.kolom);
-        Matriks temp = new Matriks(M.baria,M.Kolom);
+        Matriks temp = new Matriks(M.baris,M.Kolom);
         MakeMatriksIdentitas(MInversIdentitas);
         while (!IsMatriksIdentitas(M)){    
             for (int i = 1; i < M.baris; i++){
@@ -174,6 +174,30 @@ public class Matriks {
         return det;
     }
 
+    public static float DetCofactor (Matriks M) {
+        //Kamus Lokal
+        float Det = 0;
+
+        //Algoritma
+        if (M.baris==1) {
+            return M.element[0][0];
+        } else {
+            for (int k=0; k<M.kolom; k++) { //ITERASI KOLOM YANG DIAMBIL, BARIS TETAP (1)
+                int row = 0;
+                Matriks Cofactor = new Matriks(this.baris-1, this.kolom-1);
+                for (int i=1; i<M.baris; i++) { //ITERASI BARIS KOFAKTOR
+                    int col = 0;
+                    for (int j=0; j<M.kolom; j++) { //ITERASI KOLOM KOFAKTOR
+                        if (j!=k) {
+                            Cofactor.element[row][col] = M.element[i][j];
+                            col+=1;
+                        }
+                    } row+=1;
+                } Det += M.element[0][k] * Matriks.DetCofactor(Cofactor) * Math.pow(-1, k);
+            } return Det;
+        }
+    }
+
     public static void SPLGauss(Matriks M) {
         Matriks tempM = M.CopyMatriks();
 
@@ -189,5 +213,12 @@ public class Matriks {
         }
     }
 
+    public static void CramersRule (Matriks M) {
+        float [] b = new int [M.baris];
+        for (int bar=0; bar<M.baris; bar--) {
+            b[i] = M.element[i][M.kolom];
+        }
 
+
+    }
 }
