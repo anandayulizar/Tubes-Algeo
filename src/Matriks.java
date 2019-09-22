@@ -174,6 +174,41 @@ public class Matriks {
         return det;
     }
 
+    public static float DetSarrus (Matriks M) {
+        //Kamus Lokal
+        float PlusDiag=0, float MinusDiag=0, float temp=1;
+
+        //Algoritma
+        if (M.baris==1) {
+            PlusDiag = M.element[0][0];
+        } else if (M.baris==2) {
+            PlusDiag = M.element[0][0] * M.element[1][1];
+            MinusDiag = M.element[0][1] * M.element[1][0];
+        } else if (M.baris==3) {
+            for (int j=0; j<M.kolom; j++) {
+                int col=j;
+                for (int row=0; row<M.baris; row++) {
+                    temp *= M.element[row][col];
+                    col += 1;
+                    if (col>=M.kolom) {
+                        col=0;
+                    }
+                } PlusDiag += temp; temp=1;
+            }
+
+            for (j=M.kolom-1; j>=0; j--) {
+                col=j;
+                for (row=0; row<M.baris; row++) {
+                    temp *= M.element[row][col];
+                    col -= 1;
+                    if (col<0) {
+                        col = M.kolom-1;
+                    }
+                } MinusDiag += temp; temp=1;
+            }
+        } return (PlusDiag-MinusDiag);
+    }
+
     public static float DetCofactor (Matriks M) {
         //Kamus Lokal
         float Det = 0;
