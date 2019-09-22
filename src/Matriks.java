@@ -48,9 +48,9 @@ public class Matriks {
         Matriks MMinor = new Matriks(M.baris - 1, M.kolom - 1);
         for (int i = 0; i < M.baris; i++){
             for (int j = 0; j < M.kolom; j++){
-                idx = 0;
-                for (k = 0; k <= M.kolom; k++){
-                    if (k! = i){
+                int idx = 0;
+                for (int k = 0; k < M.kolom; k++){
+                    if (k != i) {
                         MMinor.element[j-1,idx] = M.element[j,k];
                         idx++;
                     }
@@ -176,7 +176,7 @@ public class Matriks {
 
     public static float DetSarrus (Matriks M) {
         //Kamus Lokal
-        float PlusDiag=0, float MinusDiag=0, float temp=1;
+        float PlusDiag=0, MinusDiag=0, temp=1;
 
         //Algoritma
         if (M.baris==1) {
@@ -251,8 +251,8 @@ public class Matriks {
     public static void CramersRule (Matriks M) {
         float [] b = new float [M.baris];
         float [] SolusiX = new float [M.baris];
-        Matriks NewM = new Matriks(this.baris; this.kolom-1);
-        Matriks tempM = new Matriks(NewM.baris; NewM.kolom);
+        Matriks NewM = new Matriks(this.baris, this.kolom-1);
+        Matriks tempM = new Matriks(NewM.baris, NewM.kolom);
 
         for (int bar=0; bar<M.baris; bar--) { //memindahkan element2 b pada M dalam array baru
             b[i] = M.element[i][M.kolom-1];
