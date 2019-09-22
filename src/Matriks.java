@@ -129,8 +129,11 @@ public class Matriks {
         while (!IsMatriksIdentitas(M)){    
             for (int i = 1; i < M.baris; i++){
                 for (int j = 0; j < i; j++){
-                    if (M.element[i][i] != 0){
-                        temp.element[i][j] = M.element[i][j] - M.element[i][j] * M.element[i+1][k] / M.element[i][k];
+                    if (M.element[i][j] != 0){
+                        for (k = 0; k < M.baris; k++){
+                            temp.element[i][j] = M.element[i][j] - M.element[i][j] * M.element[i+1][k] / M.element[i][k];
+                            MInversIdentias.element[i][j] = MInversIdentitas.element[i][j] - M.element[i][j] * M.element[i+1][k] / M.element[i][k];
+                        }
                     } 
                 }
             }
