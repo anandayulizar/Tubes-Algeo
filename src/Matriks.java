@@ -1,5 +1,12 @@
 import java.util.Scanner;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 public class Matriks {
     private float[][] element;
     private int baris;
@@ -13,7 +20,7 @@ public class Matriks {
         this.kolom = n;
     }
 
-    public static void BacaFileMatriks(Matriks M) {
+    public static void BacaInputMatriks(Matriks M) {
         Scanner scan = new Scanner(System.in);
         M.baris = scan.nextInt();
         M.kolom = scan.nextInt();
@@ -27,8 +34,8 @@ public class Matriks {
 
         scan.close();
     }
-    public static void BacaInputMatriks(Matriks M){
-
+    public static void BacaFileMatriks(Matriks M){
+        
     }
 
     public static void TulisMatriks(Matriks M) {
@@ -41,6 +48,22 @@ public class Matriks {
                 }
             }  
         }
+    }
+    public static void SaveFile(Matriks M){
+        try{
+            PrintWriter file = new PrintWriter("file");
+            for (int i = 0 ; i < M.baris; i++){
+                for (j = 0; j < M.kolom; j++){
+                    file.println(M.element[i][j]);
+                }
+            }
+            file.close();
+        }
+        catch (Exeption E){
+            E.printStackTrace();
+            System.out.println("File tidak tersedia");
+        }
+        
     }
 
     public static Matriks Kofaktor(Matriks M) {
@@ -170,6 +193,65 @@ public class Matriks {
         return det;
     }
 
+    public static float DetSarrus (Matriks M) {
+        //Kamus Lokal
+        float PlusDiag=0, MinusDiag=0, temp=1;
+
+        //Algoritma
+        if (M.baris==1) {
+            PlusDiag = M.element[0][0];
+        } else if (M.baris==2) {
+            PlusDiag = M.element[0][0] * M.element[1][1];
+            MinusDiag = M.element[0][1] * M.element[1][0];
+        } else if (M.baris==3) {
+            for (int j=0; j<M.kolom; j++) {
+                int col=j;
+                for (int row=0; row<M.baris; row++) {
+                    temp *= M.element[row][col];
+                    col += 1;
+                    if (col>=M.kolom) {
+                        col=0;
+                    }
+                } PlusDiag += temp; temp=1;
+            }
+
+            for (j=M.kolom-1; j>=0; j--) {
+                col=j;
+                for (row=0; row<M.baris; row++) {
+                    temp *= M.element[row][col];
+                    col -= 1;
+                    if (col<0) {
+                        col = M.kolom-1;
+                    }
+                } MinusDiag += temp; temp=1;
+            }
+        } return (PlusDiag-MinusDiag);
+    }
+
+    public static float DetCofactor (Matriks M) {
+        //Kamus Lokal
+        float Det = 0;
+
+        //Algoritma
+        if (M.baris==1) {
+            return M.element[0][0];
+        } else {
+            for (int k=0; k<M.kolom; k++) { //ITERASI KOLOM YANG DIAMBIL, BARIS TETAP (1)
+                int row = 0;
+                Matriks Cofactor = new Matriks(M.baris-1, M.kolom-1);
+                for (int i=1; i<M.baris; i++) { //ITERASI BARIS KOFAKTOR
+                    int col = 0;
+                    for (int j=0; j<M.kolom; j++) { //ITERASI KOLOM KOFAKTOR
+                        if (j!=k) {
+                            Cofactor.element[row][col] = M.element[i][j];
+                            col+=1;
+                        }
+                    } row+=1;
+                } Det += M.element[0][k] * Matriks.DetCofactor(Cofactor) * Math.pow(-1, k);
+            } return Det;
+        }
+    }
+
     public static void SPLGauss(Matriks M) {
         Matriks tempM = M.CopyMatriks();
 
@@ -185,5 +267,64 @@ public class Matriks {
         }
     }
 
+    public static Matriks KaliMatriks(Matriks M1, Matriks M2){
+        Matriks MKali = new Matriks(M1.baris,M2.kolom);
+        int sum = 0;
+        for (int brs = 0; brs <= M1.baris; brs++){
+            for (int kol = 0; kol <= M1.kolom; kol++){
+                for (int brs2 = 0; k <= M2.baris; brs2++){
+                    sum += M1.element[i][k] * M2.element[k][j];
+                }
+                MKali.element[i][j] = sum;
+                sum = 0;
+            }
+        }
+        return MKali;
+    }
 
+    public static void SPLInvers(Matriks M){
+        Matriks c = new Matriks [M.baris][1];
+        Matriks SolusiX = new Matriks [M.baris][1];
+        Matriks NewM = new Matriks(M.baris, M.kolom-1);
+
+        for (int bar = 0; bar < M.baris; bar--) { //memindahkan element2 b pada M dalam array baru
+            c.element[i][0] = M.element[i][M.kolom-1];
+        }
+
+        for (int i = 0; i < M.baris; i++) { //copy element M tanpa kolom b
+            for (int j = 0; j < M.kolom-1; j++) {
+                NewM.element[i][j] = M.element[i][j];
+            }
+        }
+        for (int i = 0; i < M.baris; i++){
+            SolusiX.element[i][0] = KaliMatriks(InversDetMatriks(NewM), c);
+        }
+    }
+
+    public static void CramersRule (Matriks M) {
+        float [] b = new float [M.baris];
+        float [] SolusiX = new float [M.baris];
+        Matriks NewM = new Matriks(M.baris, M.kolom-1);
+        Matriks tempM = new Matriks(NewM.baris, NewM.kolom);
+
+        for (int bar=0; bar<M.baris; bar--) { //memindahkan element2 b pada M dalam array baru
+            b[i] = M.element[i][M.kolom-1];
+        }
+
+        for (int i=0; i<M.baris; i++) { //copy element M tanpa kolom b
+            for (int j=0; j<M.kolom-1; j++) {
+                NewM.element[i][j] = M.element[i][j];
+            }
+        }
+
+        for (i=0; i<NewM.kolom; i++) {
+            tempM = NewM.CopyMatriks();
+            for (int j=0; j<NewM.baris; j++) {
+                tempM.element[j][i] = b[j];
+            }
+            SolusiX[i] = Matriks.DetCofactor(tempM)/Matriks.DetCofactor(NewM);
+        }
+
+        //Print nya belum
+    }
 }
