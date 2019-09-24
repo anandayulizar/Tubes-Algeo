@@ -1,4 +1,13 @@
+import java.util.*;
+import java.io.*;
 import java.util.Scanner;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Matriks {
     private double[][] element;
@@ -28,10 +37,29 @@ public class Matriks {
         scan.close();
     }
 
-    public static void BacaFileMatriks(Matriks M){
-        
-    }
+    private Scanner file;
 
+    public void BacaFileMatriks(Matriks M, String s) {
+        //Kamus Lokal
+        int row=0, col=0;
+        
+        //Algoritma
+        try {
+            file = new Scanner (new File("%s", s));
+        } catch (Exception e) {
+            System.out.println("File not found");
+        }
+
+        while(file.hasNextLine()) {
+            String line = file.nextLine(); row++;
+            String arrRow [] = line.split(" ");
+            col = arrRow.length;
+
+            for (int i=0; i<=col; i++) {
+                M.element[row-1][i] = parseDouble(arrRow[i]);
+            }
+        }
+    }
 
     public static void TulisMatriks(Matriks M) {
         for (int i = 0; i < M.baris; i++) {
@@ -47,23 +75,22 @@ public class Matriks {
             }  
         }
     }
-
-    // public static void SaveFile(Matriks M){
-    //     try{
-    //         PrintWriter file = new PrintWriter("file");
-    //         for (int i = 0 ; i < M.baris; i++){
-    //             for (int j = 0; j < M.kolom; j++){
-    //                 file.println(M.element[i][j]);
-    //             }
-    //         }
-    //         file.close();
-    //     }
-    //     catch (Exception E){
-    //         E.printStackTrace();
-    //         System.out.println("File tidak tersedia");
-    //     }
+    public static void SaveFile(Matriks M){
+        try{
+            PrintWriter file = new PrintWriter("file");
+            for (int i = 0 ; i < M.baris; i++){
+                for (j = 0; j < M.kolom; j++){
+                    file.println(M.element[i][j]);
+                }
+            }
+            file.close();
+        }
+        catch (Exeption E){
+            E.printStackTrace();
+            System.out.println("File tidak tersedia");
+        }
         
-    // }
+    }
 
     public static Matriks Kofaktor(Matriks M) {
         Matriks MKofaktor = new Matriks(M.baris, M.kolom);
@@ -150,10 +177,10 @@ public class Matriks {
                 for (int i = 0; i < M.kolom; i++) {
                     tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol]);
                     MInversIdentitas.element[brs][i] = MInversIdentitas.element[brs][i] - (MInversIdentitas.element[kol][i] * temp / tempM.element[kol][kol]);
+                        }
+                    } 
                 }
-            }
-        }
-
+                
         for (int i = 0; i < tempM.baris; i++) {
             int lead1 = 0;
             boolean found = false;
@@ -199,11 +226,9 @@ public class Matriks {
                 MInversIdentitas.element[i][j] = Math.round(MInversIdentitas.element[i][j] * 10.0) / 10.0;
             }
         }
-   
+
         return MInversIdentitas;
     }
-
-   
 
     public Matriks CopyMatriks() {
         Matriks CopyM = new Matriks(this.baris, this.kolom);
@@ -219,7 +244,7 @@ public class Matriks {
 
     public double DeterminanGauss() {
         Matriks tempM = this.CopyMatriks();
-
+        
         for (int j = 0; j < this.kolom; j++) {
             if (this.element[j][j] == 0) { 
                 int next = 1;
@@ -312,7 +337,6 @@ public class Matriks {
         }
     }
 
-
     public void kaliMin() {
         for (int i = 0; i < this.baris; i++) {
             for (int j = 0; j < this.kolom; j++) {
@@ -381,7 +405,6 @@ public class Matriks {
 
         //Print nya belum
     }
-
 
     public void TukarBaris(int a, int b) {
         a -= 1;
@@ -687,5 +710,4 @@ public class Matriks {
 
         scan.close();
     }
-    
 }
