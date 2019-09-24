@@ -48,22 +48,22 @@ public class Matriks {
         }
     }
 
-    public static void SaveFile(Matriks M){
-        try{
-            PrintWriter file = new PrintWriter("file");
-            for (int i = 0 ; i < M.baris; i++){
-                for (int j = 0; j < M.kolom; j++){
-                    file.println(M.element[i][j]);
-                }
-            }
-            file.close();
-        }
-        catch (Exception E){
-            E.printStackTrace();
-            System.out.println("File tidak tersedia");
-        }
+    // public static void SaveFile(Matriks M){
+    //     try{
+    //         PrintWriter file = new PrintWriter("file");
+    //         for (int i = 0 ; i < M.baris; i++){
+    //             for (int j = 0; j < M.kolom; j++){
+    //                 file.println(M.element[i][j]);
+    //             }
+    //         }
+    //         file.close();
+    //     }
+    //     catch (Exception E){
+    //         E.printStackTrace();
+    //         System.out.println("File tidak tersedia");
+    //     }
         
-    }
+    // }
 
     public static Matriks Kofaktor(Matriks M) {
         Matriks MKofaktor = new Matriks(M.baris, M.kolom);
@@ -142,20 +142,66 @@ public class Matriks {
 
     public static Matriks InversGaussMatriks(Matriks M){
         Matriks MInversIdentitas = new Matriks(M.baris, M.kolom);
-        Matriks temp = new Matriks(M.baris,M.kolom);
-        MakeMatriksIdentitas(MInversIdentitas);
-        while (!IsMatriksIdentitas(M)){    
-            for (int i = 1; i < M.baris; i++){
-                for (int j = 0; j < i; j++){
-                    if (M.element[i][j] != 0){
-                        for (int k = 0; k < M.baris; k++){
-                            temp.element[i][j] = M.element[i][j] - M.element[i][j] * M.element[i+1][k] / M.element[i][k];
-                            MInversIdentitas.element[i][j] = MInversIdentitas.element[i][j] - M.element[i][j] * M.element[i+1][k] / M.element[i][k];
-                        }
-                    } 
+        Matriks tempM = M.CopyMatriks();
+        MakeMatriksIdentitas(MInversIdentitas); 
+        for (int brs = 1; brs < M.baris; brs++) {
+            for (int kol = 0; kol < brs; kol++) {
+                double temp = tempM.element[brs][kol];
+                for (int i = 0; i < M.kolom; i++) {
+                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol]);
+                    MInversIdentitas.element[brs][i] = MInversIdentitas.element[brs][i] - (MInversIdentitas.element[kol][i] * temp / tempM.element[kol][kol]);
                 }
             }
         }
+
+        for (int i = 0; i < tempM.baris; i++) {
+            int lead1 = 0;
+            boolean found = false;
+            double temp = 1;
+            while ((lead1 < tempM.kolom) && (!found)) {
+                if (tempM.element[i][lead1] != 0) {
+                    found = true;
+                    temp = tempM.element[i][lead1];
+                    
+                } else {
+                    lead1 += 1;
+                }
+            }
+            for (int j = 0; j < tempM.kolom; j++) {
+                tempM.element[i][j] /= temp;
+                MInversIdentitas.element[i][j] /= temp;
+
+            }
+        }
+    
+        for (int i = 0; i < tempM.baris; i++) {
+            for (int j = 0; j < tempM.kolom; j++) {
+                if (tempM.element[i][j] != 0) {
+                    // Cek atas
+                    int goUp = 1;
+                    while ((i - goUp) >= 0) {
+                        double temp = tempM.element[i - goUp][j];
+                        for(int m = 0; m < tempM.kolom; m++) {
+                            tempM.element[i - goUp][m] -= tempM.element[i][m] * temp / tempM.element[i][j];
+                            MInversIdentitas.element[i - goUp][m] -= MInversIdentitas.element[i][m] * temp / tempM.element[i][j];
+                        }
+                        goUp++;
+                    }
+                    break;
+                } else {
+                    continue;
+                }
+            }
+        }
+
+        for (int i = 0; i < MInversIdentitas.baris; i++) {
+            for (int j = 0; j < MInversIdentitas.kolom;j++) {
+                MInversIdentitas.element[i][j] = Math.round(MInversIdentitas.element[i][j] * 10.0) / 10.0;
+            }
+        }
+
+
+               
         return MInversIdentitas;
     }
 
@@ -419,8 +465,7 @@ public class Matriks {
                 }
                 double temp = tempM.element[brs][kol2];
                 for (int i = 0; i < M.kolom; i++) {
-                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol2]);  
-                    // tempM.element[brs][i] = Math.round(tempM.element[brs][i] * 10000.0) / 10000.0;              
+                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol2]);                
                 }
                 System.out.println("Pengurangan baris tahap ke-" + k);
                 Matriks.TulisMatriks(tempM);
@@ -447,8 +492,7 @@ public class Matriks {
                 }
                 double temp = tempM.element[brs][kol2];
                 for (int i = 0; i < this.kolom; i++) {
-                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol2]);  
-                    // tempM.element[brs][i] = Math.round(tempM.element[brs][i] * 10000.0) / 10000.0;              
+                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol2]);                
                 }
             }
         }
@@ -475,8 +519,7 @@ public class Matriks {
                 }
                 double temp = tempM.element[brs][kol2];
                 for (int i = 0; i < M.kolom; i++) {
-                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol2]);                     
-                    // tempM.element[brs][i] = Math.round(tempM.element[brs][i] * 10000.0) / 10000.0; 
+                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol2]);                      
                 }
                 System.out.println("Pengurangan baris tahap ke-" + k);
                 Matriks.TulisMatriks(tempM);
@@ -499,7 +542,7 @@ public class Matriks {
                         double temp = tempM.element[i - goUp][j];
                         for(int m = 0; m < tempM.kolom; m++) {
                             tempM.element[i - goUp][m] -= tempM.element[i][m] * temp / tempM.element[i][j];
-                            // tempM.element[i - goUp][m] = Math.round(tempM.element[i - goUp][m] * 10000.0) / 10000.0; 
+                            
                         }
                         goUp++;
                     }
@@ -527,7 +570,7 @@ public class Matriks {
                         double temp = tempM.element[i - goUp][j];
                         for(int m = 0; m < tempM.kolom; m++) {
                             tempM.element[i - goUp][m] -= tempM.element[i][m] * temp / tempM.element[i][j];
-                            // tempM.element[i - goUp][m] = Math.round(tempM.element[i - goUp][m] * 10000.0) / 10000.0; 
+                            
                         }
                         goUp++;
                     }
