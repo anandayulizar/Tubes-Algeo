@@ -53,7 +53,7 @@ public class Matriks {
         try{
             PrintWriter file = new PrintWriter("file");
             for (int i = 0 ; i < M.baris; i++){
-                for (j = 0; j < M.kolom; j++){
+                for (int j = 0; j < M.kolom; j++){
                     file.println(M.element[i][j]);
                 }
             }
@@ -66,6 +66,20 @@ public class Matriks {
         
     }
 
+    public static Matriks GabungKolMatriks(Matriks M1,Matriks M2){
+        Matriks NewM = new Matriks (M1.baris, M1.kolom + M2.kolom);
+        for (int i = 0; i < M1.baris; i++){
+            for (int j = 0; j < M1.kolom; j++){
+                NewM.element[i][j] = M1.element[i][j];
+            }
+        }
+        for (int i = 0; i < M1.baris; i++){
+            for (int j = M1.kolom; j < M1.kolom + M2.kolom; j++){
+                New.element[i][j] = M2.element[i][j];
+            }
+        }
+    }
+
     public static Matriks Kofaktor(Matriks M) {
         Matriks MKofaktor = new Matriks(M.baris, M.kolom);
         Matriks MMinor = new Matriks(M.baris - 1, M.kolom - 1);
@@ -74,7 +88,7 @@ public class Matriks {
                 int idx = 0;
                 for (int k = 0; k <= M.kolom; k++){
                     if (k != i){
-                        MMinor.element[j-1][idx] = M.element[j][k];
+                        MMinor.element[j-1][idx] = Math.pow(-1,j-1+idx) * M.element[j][k];
                         idx++;
                     }
                 }
@@ -145,7 +159,7 @@ public class Matriks {
         Matriks MInversIdentitas = new Matriks(M.baris, M.kolom);
         Matriks temp = new Matriks(M.baris,M.kolom);
         MakeMatriksIdentitas(MInversIdentitas);
-        while (!IsMatriksIdentitas(M)){    
+        while (!IsMatriksIdentitas(M)){
             for (int i = 1; i < M.baris; i++){
                 for (int j = 0; j < i; j++){
                     if (M.element[i][j] != 0){
@@ -153,9 +167,10 @@ public class Matriks {
                             temp.element[i][j] = M.element[i][j] - M.element[i][j] * M.element[i+1][k] / M.element[i][k];
                             MInversIdentitas.element[i][j] = MInversIdentitas.element[i][j] - M.element[i][j] * M.element[i+1][k] / M.element[i][k];
                         }
-                    } 
+                    }
                 }
             }
+
         }
         return MInversIdentitas;
     }
@@ -254,7 +269,7 @@ public class Matriks {
 
     public static void SPLGauss(Matriks M) {
         Matriks tempM = M.CopyMatriks();
-
+        Matriks SolusiX = new Matriks [M.baris][1];
         for (int brs = 1; brs < M.baris; brs++) {
             for (int kol = 0; kol < brs; kol++) {
                 float temp = tempM.element[brs][kol];
@@ -265,6 +280,7 @@ public class Matriks {
                 }
             }
         }
+        
     }
 
     public static Matriks KaliMatriks(Matriks M1, Matriks M2){
@@ -282,13 +298,13 @@ public class Matriks {
         return MKali;
     }
 
-    public static void SPLInvers(Matriks M){
+    public static Matriks SPLInvers(Matriks M){
         Matriks c = new Matriks [M.baris][1];
         Matriks SolusiX = new Matriks [M.baris][1];
         Matriks NewM = new Matriks(M.baris, M.kolom-1);
 
-        for (int bar = 0; bar < M.baris; bar--) { //memindahkan element2 b pada M dalam array baru
-            c.element[i][0] = M.element[i][M.kolom-1];
+        for (int bar = 0; bar < M.baris; bar++) {
+            c.element[bar][0] = M.element[bar][M.kolom-1];
         }
 
         for (int i = 0; i < M.baris; i++) { //copy element M tanpa kolom b
@@ -299,16 +315,17 @@ public class Matriks {
         for (int i = 0; i < M.baris; i++){
             SolusiX.element[i][0] = KaliMatriks(InversDetMatriks(NewM), c);
         }
+        return SolusiX;
     }
 
-    public static void CramersRule (Matriks M) {
-        float [] b = new float [M.baris];
-        float [] SolusiX = new float [M.baris];
+    public static Matriks CramersRule (Matriks M) {
+        Matriks b = new Matriks [M.baris][1];
+        MAtriks SolusiX = new Matriks [M.baris][i];
         Matriks NewM = new Matriks(M.baris, M.kolom-1);
         Matriks tempM = new Matriks(NewM.baris, NewM.kolom);
 
-        for (int bar=0; bar<M.baris; bar--) { //memindahkan element2 b pada M dalam array baru
-            b[i] = M.element[i][M.kolom-1];
+        for (int bar=0; bar<M.baris; bar++) { //memindahkan element2 b pada M dalam array baru
+            b.element[bar][0] = M.element[bar][M.kolom-1];
         }
 
         for (int i=0; i<M.baris; i++) { //copy element M tanpa kolom b
@@ -320,10 +337,11 @@ public class Matriks {
         for (i=0; i<NewM.kolom; i++) {
             tempM = NewM.CopyMatriks();
             for (int j=0; j<NewM.baris; j++) {
-                tempM.element[j][i] = b[j];
+                tempM.element[j][i] = b.element[j][0];
             }
-            SolusiX[i] = Matriks.DetCofactor(tempM)/Matriks.DetCofactor(NewM);
+            SolusiX.element[i][0] = Matriks.DetCofactor(tempM)/Matriks.DetCofactor(NewM);
         }
+        return SolusiX;
 
         //Print nya belum
     }
