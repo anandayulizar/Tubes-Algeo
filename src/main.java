@@ -2,14 +2,16 @@ public class main{
 
 public static void main(String[] args){
 
-    //SHOW MENU
+    //KAMUS
     boolean run;
     int input,sub_input;
     Matriks M,SolusiX;
     run = true;
 
+    //INPUT
+    
 
-
+    //SHOW MENU
     while (run){
         System.out.println("MENU");
         System.out.println("1. Sistem Persamaan Linier");
@@ -114,13 +116,12 @@ public static void main(String[] args){
                 System.out.println("Masukkan huruf 'y' untuk keluar dan 'n' untuk tetap berada pada program : ");
                 keluar = scan.nextChar();
             }
-            
-
-
-
-
-
-
+            switch(keluar){
+                case 'y':
+                run = false;
+                case 'n':
+                run = true;
+            }
     }
 
 }
