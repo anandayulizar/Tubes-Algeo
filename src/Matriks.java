@@ -75,30 +75,21 @@ public class Matriks {
             }  
         }
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 7a97ee5e1193b2be830825bd6c2699b39a00612b
+
     public static void SaveFile(Matriks M){
         try{
             PrintWriter file = new PrintWriter("file");
             for (int i = 0 ; i < M.baris; i++){
-<<<<<<< HEAD
                 for (int j = 0; j < M.kolom; j++){
-=======
-                for (j = 0; j < M.kolom; j++){
->>>>>>> 7a97ee5e1193b2be830825bd6c2699b39a00612b
                     file.println(M.element[i][j]);
                 }
             }
             file.close();
         }
-        catch (Exeption E){
+        catch (Exception E){
             E.printStackTrace();
             System.out.println("File tidak tersedia");
         }
-<<<<<<< HEAD
-=======
 
     // public static void SaveFile(Matriks M){
     //     try{
@@ -114,9 +105,6 @@ public class Matriks {
     //         E.printStackTrace();
     //         System.out.println("File tidak tersedia");
     //     }
->>>>>>> 402752850374d5e97e4d2ecd5b193c39bb0e48ca
-=======
->>>>>>> 7a97ee5e1193b2be830825bd6c2699b39a00612b
         
     }
 
@@ -211,7 +199,6 @@ public class Matriks {
 
     public static Matriks InversGaussMatriks(Matriks M){
         Matriks MInversIdentitas = new Matriks(M.baris, M.kolom);
-<<<<<<< HEAD
         Matriks temp = new Matriks(M.baris,M.kolom);
         MakeMatriksIdentitas(MInversIdentitas);
         while (!IsMatriksIdentitas(M)){
@@ -223,7 +210,6 @@ public class Matriks {
                             MInversIdentitas.element[i][j] = MInversIdentitas.element[i][j] - M.element[i][j] * M.element[i+1][k] / M.element[i][k];
                         }
                     }
-=======
         Matriks tempM = M.CopyMatriks();
         MakeMatriksIdentitas(MInversIdentitas); 
         for (int brs = 1; brs < M.baris; brs++) {
@@ -272,7 +258,6 @@ public class Matriks {
                     break;
                 } else {
                     continue;
->>>>>>> 402752850374d5e97e4d2ecd5b193c39bb0e48ca
                 }
             }
 
@@ -394,8 +379,6 @@ public class Matriks {
         }
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     public static void SPLGauss(Matriks M) {
         Matriks tempM = M.CopyMatriks();
         Matriks SolusiX = new Matriks [M.baris][1];
@@ -407,15 +390,10 @@ public class Matriks {
                     System.out.println("Tahap");
                     Matriks.TulisMatriks(tempM);
                 }
-=======
-
-=======
->>>>>>> 7a97ee5e1193b2be830825bd6c2699b39a00612b
     public void kaliMin() {
         for (int i = 0; i < this.baris; i++) {
             for (int j = 0; j < this.kolom; j++) {
                 this.element[i][j] *= (-1);
->>>>>>> 402752850374d5e97e4d2ecd5b193c39bb0e48ca
             }
         }
         
@@ -436,21 +414,12 @@ public class Matriks {
         return MKali;
     }
 
-<<<<<<< HEAD
     public static Matriks SPLInvers(Matriks M){
         Matriks c = new Matriks [M.baris][1];
         Matriks SolusiX = new Matriks [M.baris][1];
         Matriks NewM = new Matriks(M.baris, M.kolom-1);
 
         for (int bar = 0; bar < M.baris; bar++) {
-=======
-    public static void SPLInvers(Matriks M){
-        Matriks c = new Matriks(M.baris, 1);
-        Matriks SolusiX = new Matriks(M.baris, 1);
-        Matriks NewM = new Matriks(M.baris, M.kolom-1);
-
-        for (int bar = 0; bar < M.baris; bar--) { //memindahkan element2 b pada M dalam array baru
->>>>>>> 402752850374d5e97e4d2ecd5b193c39bb0e48ca
             c.element[bar][0] = M.element[bar][M.kolom-1];
         }
 
@@ -465,7 +434,6 @@ public class Matriks {
         return SolusiX;
     }
 
-<<<<<<< HEAD
     public static Matriks CramersRule (Matriks M) {
         Matriks b = new Matriks [M.baris][1];
         MAtriks SolusiX = new Matriks [M.baris][i];
@@ -474,16 +442,6 @@ public class Matriks {
 
         for (int bar=0; bar<M.baris; bar++) { //memindahkan element2 b pada M dalam array baru
             b.element[bar][0] = M.element[bar][M.kolom-1];
-=======
-    public static void CramersRule (Matriks M) {
-        double [] b = new double [M.baris];
-        double [] SolusiX = new double [M.baris];
-        Matriks NewM = new Matriks(M.baris, M.kolom-1);
-        Matriks tempM = new Matriks(NewM.baris, NewM.kolom);
-
-        for (int bar=0; bar<M.baris; bar--) { //memindahkan element2 b pada M dalam array baru
-            b[bar] = M.element[bar][M.kolom-1];
->>>>>>> 402752850374d5e97e4d2ecd5b193c39bb0e48ca
         }
 
         for (int i=0; i<M.baris; i++) { //copy element M tanpa kolom b
