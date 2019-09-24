@@ -199,9 +199,7 @@ public class Matriks {
                 MInversIdentitas.element[i][j] = Math.round(MInversIdentitas.element[i][j] * 10.0) / 10.0;
             }
         }
-
-
-               
+   
         return MInversIdentitas;
     }
 
@@ -430,6 +428,7 @@ public class Matriks {
     }
 
     public void divideByLeading1() {
+        this.setLeadingOne();
         for (int i = 0; i < this.baris; i++) {
             int lead1 = 0;
             boolean found = false;
@@ -448,6 +447,21 @@ public class Matriks {
         }
     }
 
+    public static boolean isKolAllZero(Matriks M, int brs) {
+        boolean allZero = true;
+        int i = 0;
+
+        while ((i < M.kolom) && (allZero)) {
+            if (M.element[brs][i] != 0) {
+                allZero = false;
+            } else {
+                i++;
+            }
+        }
+
+        return allZero;
+    }
+
     /* Tinggal atur outputnya mau gimana */
     public static void SPLGauss(Matriks M) {
         Matriks tempM = M.CopyMatriks();
@@ -459,6 +473,12 @@ public class Matriks {
 
         for (int brs = 1; brs < M.baris; brs++) {
             for (int kol = 0; kol < brs; kol++) {
+                if (isKolAllZero(tempM, brs)) {
+                    break;
+                }
+                if (isKolAllZero(tempM, kol)) {
+                    continue;
+                }
                 int kol2 = kol;
                 if (tempM.element[kol][kol2] == 0) {
                     kol2++;
@@ -486,6 +506,9 @@ public class Matriks {
 
         for (int brs = 1; brs < this.baris; brs++) {
             for (int kol = 0; kol < brs; kol++) {
+                if (isKolAllZero(tempM, brs)) {
+                    break;
+                }
                 int kol2 = kol;
                 if (tempM.element[kol][kol2] == 0) {
                     kol2++;
@@ -513,6 +536,9 @@ public class Matriks {
 
         for (int brs = 1; brs < M.baris; brs++) {
             for (int kol = 0; kol < brs; kol++) {
+                if (isKolAllZero(tempM, brs)) {
+                    break;
+                }
                 int kol2 = kol;
                 while (tempM.element[kol][kol2] == 0) {
                     kol2++;
@@ -582,6 +608,35 @@ public class Matriks {
         }
 
         return tempM;
+    }
+
+    public static void printGauss(Matriks M) {
+        // Prekondisi: Matriks dalam bentuk reduced Echelon Form
+        for (int i = 0; i < M.baris; i++) {
+            int j = 0;
+            while ((M.element[i][j] == 0) && (j < M.kolom)) {
+                j++;
+                if (j == M.kolom) {
+                    break;
+                }
+            }
+            if (j != M.kolom) {
+            System.out.printf(M.element[i][j] + "x" + (j+1));
+            for (int k = j + 1; k < (M.kolom - 1); k++) {
+                if ((M.element[i][k] > 0) && (M.element[i][k] == 1)) {
+                    System.out.printf(" + " + "x" + (k+1));
+                } else if (M.element[i][k] == -1) {
+                    System.out.printf(" - " + "x" + (k+1));
+                } else if (M.element[i][k] > 0) {
+                    System.out.printf(" + " + M.element[i][k] + "x" + (k+1));
+                } else if (M.element[i][k] < 0) {
+                    System.out.printf(" " + M.element[i][k] + "x" + (k+1));
+                }
+            }
+            System.out.printf(" = " + M.element[i][M.kolom-1] + "%n");
+            }
+            
+        }
     }
 
     public static void Interpolasi() {
