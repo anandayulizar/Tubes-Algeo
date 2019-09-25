@@ -499,11 +499,15 @@ public class Matriks {
         boolean barisPunyaSolusi = false;
         int j = 0;
 
-        while ((j < M.kolom -1) && (!barisPunyaSolusi)) {
-            if (M.element[brs][j] != 0) {
-                barisPunyaSolusi = true;
-            } else {
-                j++;
+        if (isKolAllZero(M, brs)) {
+            barisPunyaSolusi = true;
+        } else {
+            while ((j < M.kolom -1) && (!barisPunyaSolusi)) {
+                if (M.element[brs][j] != 0) {
+                    barisPunyaSolusi = true;
+                } else {
+                    j++;
+                }
             }
         }
 
