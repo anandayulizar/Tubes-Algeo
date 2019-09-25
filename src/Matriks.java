@@ -72,7 +72,7 @@ public class Matriks {
     public void ReadInterpolasiFile (Matriks M, String s) {
         OpenFile(s);
         int row=0;
-        ArrayList<Double> Yvalue = new ArrayList<Double>();
+        ArrayList<Double> Yvalue = new ArrayList<Double>(); //array dinamis
         while(file.hasNextLine()) {
             String line = file.nextLine(); row++;
             String arrRow [] = line.split(" ");
@@ -82,6 +82,7 @@ public class Matriks {
         col = Yvalue.length+1; 
         M.baris = row; M.kolom = col;
 
+        //Mengisi elemen augmented matrix
         for (int i=0; i<M.baris; i++) {
             M.element[i][M.kolom-1] = Yvalue.get(i);
             for (int j=0; j<M.kolom-1; j++) {
@@ -141,9 +142,9 @@ public class Matriks {
         return (MKofaktor);
     }
     public static Matriks Transpose(Matriks M){
-        Matriks MTranspose = new Matriks(M.baris, M.kolom);
-        for (int i = 0; i < M.baris; i++){
-            for (int j = 0; j < M.kolom; j++){
+        Matriks MTranspose = new Matriks(M.kolom, M.baris);
+        for (int i = 0; i < M.kolom; i++){
+            for (int j = 0; j < M.baris; j++){
                 MTranspose.element [i][j] = M.element[j][i];
             }
         }
