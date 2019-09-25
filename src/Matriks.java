@@ -134,7 +134,7 @@ public class Matriks {
                         idx++;
                     }
                 }
-                MKofaktor.element[i][j] = Math.pow(-1,j-1+idx) * DetSarrus(MMinor)
+                MKofaktor.element[i][j] = Math.pow(-1,j-1+idx) * DetSarrus(MMinor);
             }
         }
         return (MKofaktor);
