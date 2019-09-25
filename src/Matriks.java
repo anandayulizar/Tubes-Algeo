@@ -126,17 +126,19 @@ public class Matriks {
         Matriks MKofaktor = new Matriks(M.baris, M.kolom);
         Matriks MMinor = new Matriks(M.baris - 1, M.kolom - 1);
         for (int i = 0; i < M.baris; i++){
-            int idx_bar = i+1;
             for (int j = 0; j < M.kolom; j++){
-                while(i != (M.baris - 1) && j != (M.kolom-1)){
-                    int idx_kol = j+1;
-                    if(idx_bar > M.baris - 1 ){
-                        idx_bar = idx_bar - M.baris;
+                for (int idxbar = 0; idxbar < M.baris - 1; idxbar++){
+                    for (int idxkol = 0; idxkol < M.kolom - 1; idxkol++){
+                        int idx_bar = idxbar+1;
+                        int idx_kol = idxkol+1;
+                        if(idx_bar > M.baris - 1 ){
+                            idx_bar = idx_bar - M.baris;
+                        }
+                        if(idx_kol > M.kolom - 1 ){
+                            idx_kol = idx_kol - M.kolom;
+                        }
+                        MMinor.element[idxbar][idxkol] = M.element[idx_bar][idx_kol];    
                     }
-                    if(idx_kol > M.kolom - 1 ){
-                        idx_kol = idx_kol - M.kolom;
-                    }
-                    MMinor.element[i][j] = M.element[idx_bar][idx_kol];
                 }
                 MKofaktor.element[i][j] = DetSarrus(MMinor);
             }
