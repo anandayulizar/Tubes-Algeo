@@ -131,20 +131,10 @@ public class Matriks {
                 while(i != (M.baris - 1) && j != (M.kolom-1)){
                     int idx_kol = j+1;
                     if(idx_bar > M.baris - 1 ){
-                        if (idx_bar - (M.baris-1 == 1){
-                            idx_bar = 0;
-                        }
-                        else{   //(idx_bar - M.baris-1 == 2)
-                            idx_bar = 1;
-                        }
+                        idx_bar = idx_bar - M.baris;
                     }
                     if(idx_kol > M.kolom - 1 ){
-                        if (idx_kol - (M.kolom - 1) == 1){
-                            idx_kol = 0;
-                        }
-                        else{   //(idx_bar - M.baris-1 == 2)
-                            idx_kol = 1;
-                        }
+                        idx_kol = idx_kol - M.kolom;
                     }
                     MMinor.element[i][j] = M.element[idx_bar][idx_kol];
                 }
