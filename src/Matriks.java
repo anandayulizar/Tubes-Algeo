@@ -56,7 +56,7 @@ public class Matriks {
             col = arrRow.length;
 
             for (int i=0; i<=col; i++) {
-                M.element[row-1][i] = parseDouble(arrRow[i]);
+                M.element[row-1][i] = Double.parseDouble(arrRow[i]);
             }
         }
     }
@@ -79,13 +79,13 @@ public class Matriks {
         try{
             PrintWriter file = new PrintWriter("file");
             for (int i = 0 ; i < M.baris; i++){
-                for (j = 0; j < M.kolom; j++){
+                for (int j = 0; j < M.kolom; j++){
                     file.println(M.element[i][j]);
                 }
             }
             file.close();
         }
-        catch (Exeption E){
+        catch (Exception E){
             E.printStackTrace();
             System.out.println("File tidak tersedia");
         }
@@ -406,7 +406,7 @@ public class Matriks {
         if (Matriks.DetCofactor(NewM)==0) {
             System.out.println("Hasil tidak dapat dihitung. Silakan pilih operasi lain.");
         } else {
-            for (i=0; i<SolusiX.length; i++) {
+            for (int i=0; i<SolusiX.length; i++) {
                 if (i==SolusiX.length-1) {
                     System.out.println("x" + i + ": " + SolusiX[i]);
                 } else {
