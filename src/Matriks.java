@@ -403,7 +403,17 @@ public class Matriks {
             SolusiX[i] = Matriks.DetCofactor(tempM)/Matriks.DetCofactor(NewM);
         }
 
-        //Print nya belum
+        if (Matriks.DetCofactor(NewM)==0) {
+            System.out.println("Hasil tidak dapat dihitung. Silakan pilih operasi lain.");
+        } else {
+            for (i=0; i<SolusiX.length; i++) {
+                if (i==SolusiX.length-1) {
+                    System.out.println("x" + i + ": " + SolusiX[i]);
+                } else {
+                    System.out.print("x" + i + ": " + SolusiX[i] + "");
+                }
+            }
+        }
     }
 
     public void TukarBaris(int a, int b) {
