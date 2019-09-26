@@ -6,12 +6,12 @@ public class main{
 
         //KAMUS
         boolean run;
-        int input;
-        int sub_input;
+        int input, sub_input, fileOrKey;
         Matriks M = new Matriks();
         Matriks solusiX = new Matriks();
         run = true;
         char keluar;
+        String inFile;
 
         //INPUT
         
@@ -46,9 +46,25 @@ public class main{
                     System.out.println("Masukkan angka 1-4: ");
                     sub_input = scan.nextInt();
                 }
-                switch (sub_input){
+                switch (sub_input) {
                     case 1:
+                    // System.out.println("Apakah anda ingin input matriks melalui file atau keyboard? (1/2)");
+                    // System.out.printf("1. File%n2. Keyboard%n");
+                    // System.out.println("Pilih opsi:");
+                    // fileOrKey = scan.nextInt();
+                    // while ((fileOrKey < 1) || (fileOrKey > 2)) {
+                    //     System.out.println("Input 1 atau 2");
+                    //     System.out.printf("1. File%n2. Keyboard%n");
+                    //     System.out.println("Pilih opsi:");
+                    //     fileOrKey = scan.nextInt();
+                    // }
+                    // if (fileOrKey == 1) {
                     Matriks.BacaInputMatriks(M);
+                    // } else {
+                    //     System.out.println("Input nama file:");
+                    //     inFile = scan.nextLine();
+                    //     Matriks.ReadMatriksFile(M, inFile);
+                    // }
                     Matriks.TulisMatriks(M.SPLGauss());
                     Matriks.printGauss(M.SPLGauss());
                     break;
@@ -60,19 +76,20 @@ public class main{
                     break;
                     
                     case 3:
-                    // Matriks.TulisMatriks(M.SPLInvers(M));
-                    // solusiX = M.CopyMatriks();
-                    // System.out.println("Solusi dari Sistem Persamaan Linier yang diperoleh:");
-                    // for (int i = 0; i < M.baris; i++){
-                    //     for (int j = 0; j <M.kolom; j++){
-                    //         System.out.println("X"+ (i+1) + SolusiX.element[i][j] );
-                    //     }
+                    Matriks.BacaInputMatriks(M);
+                    Matriks.TulisMatriks(Matriks.SPLInvers(M));
+                    solusiX = Matriks.SPLInvers(M);
+                    System.out.println("Solusi dari Sistem Persamaan Linier yang diperoleh:");
+                    for (int i = 0; i < M.baris; i++){
+                        for (int j = 0; j <M.kolom; j++){
+                            System.out.println("X"+ (i+1) + solusiX.element[i][j] );
+                        }
+                    }
                     break;
                     case 4:
                     Matriks.BacaInputMatriks(M);
                     Matriks.CramersRule(M);
-                    break;
-                    
+                    break;   
                 }
                 break;
 
@@ -88,13 +105,16 @@ public class main{
             }
             switch(sub_input){
                 case 1:
+                Matriks.BacaInputMatriks(M);
                 System.out.println(Math.round(M.DeterminanGauss()*100.0)/100.0);
                 break;
                 case 2:
-                System.out.println(Math.round(M.DetCofactor(M)*100.0)/100.0);
+                Matriks.BacaInputMatriks(M);
+                System.out.println(Math.round(Matriks.DetCofactor(M)*100.0)/100.0);
                 break;
                 case 3:
-                System.out.println(Math.round(M.DetSarrus(M)*100.0)/100.0);
+                Matriks.BacaInputMatriks(M);
+                System.out.println(Math.round(Matriks.DetSarrus(M)*100.0)/100.0);
                 break;
             }
             break;
@@ -109,21 +129,25 @@ public class main{
                 }
                 switch(sub_input){
                 case 1:
-                M.TulisMatriks(M.InversDetMatriks(M));
+                Matriks.BacaInputMatriks(M);
+                Matriks.TulisMatriks(Matriks.InversDetMatriks(M));
                 break;
                 case 2:
-                M.TulisMatriks(M.InversGaussMatriks(M));
+                Matriks.BacaInputMatriks(M);
+                Matriks.TulisMatriks(Matriks.InversGaussMatriks(M));
                 break;
                 }
             break;
             case 4:
-            M.TulisMatriks(M.Kofaktor(M));
+            Matriks.BacaInputMatriks(M);
+            Matriks.TulisMatriks(Matriks.Kofaktor(M));
             break;
             case 5:
-            M.TulisMatriks(M.Adjoin(M));
+            Matriks.BacaInputMatriks(M);
+            Matriks.TulisMatriks(Matriks.Adjoin(M));
             break;
             case 6:
-            M.Interpolasi();
+            Matriks.Interpolasi();
             break;
             case 7:
             System.out.println("Anda yakin ingin keluar? y/n");

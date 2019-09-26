@@ -16,7 +16,9 @@ public class Matriks {
 
     public static void BacaInputMatriks(Matriks M) {
         Scanner scan = new Scanner(System.in);
+        System.out.println("Masukkan panjang baris matriks!");
         M.baris = scan.nextInt();
+        System.out.println("Masukkan panjang kolom matriks!");
         M.kolom = scan.nextInt();
         M.element = new double[M.baris][M.kolom];
 
@@ -272,17 +274,6 @@ public class Matriks {
         Matriks MInversIdentitas = new Matriks(M.baris, M.kolom);
         Matriks temp = new Matriks(M.baris,M.kolom);
         MakeMatriksIdentitas(MInversIdentitas);
-        while (!IsMatriksIdentitas(M)){
-            for (int i = 1; i < M.baris; i++){
-                for (int j = 0; j < i; j++){
-                    if (M.element[i][j] != 0){
-                        for (int k = 0; k < M.baris; k++){
-                            temp.element[i][j] = M.element[i][j] - M.element[i][j] * M.element[i+1][k] / M.element[i][k];
-                            MInversIdentitas.element[i][j] = MInversIdentitas.element[i][j] - M.element[i][j] * M.element[i+1][k] / M.element[i][k];
-                        }
-                    }
-                }
-            }
         Matriks tempM = M.CopyMatriks();
         for (int brs = 1; brs < M.baris; brs++) {
             for (int kol = 0; kol < brs; kol++) {
@@ -342,7 +333,7 @@ public class Matriks {
                 MInversIdentitas.element[i][j] = Math.round(MInversIdentitas.element[i][j] * 10.0) / 10.0;
             }
         }
-    }
+    
         return MInversIdentitas; 
     }
 
