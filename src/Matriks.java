@@ -26,7 +26,7 @@ public class Matriks {
             }
         }
 
-        scan.close();
+        
     }
 
     public static void FileName (String fname) {
@@ -107,10 +107,11 @@ public class Matriks {
         //Algoritma
         OpenFile(s);
         int row=0;
+        int col = 0;
         while(file.hasNextLine()) {
             String line = file.nextLine(); row++;
             String arrRow [] = line.split(" ");
-            int col = arrRow.length;
+            col = arrRow.length;
 
             for (int i=0; i<col; i++) {
                 M.element[row-1][i] = Double.parseDouble(arrRow[i]);
@@ -123,6 +124,7 @@ public class Matriks {
     public static void ReadInterpolasiFile (Matriks M, String s) {
         OpenFile(s);
         int row=0;
+        int col = 0;
         ArrayList<Double> Yvalue = new ArrayList<Double>(); //array dinamis
         while(file.hasNextLine()) {
             String line = file.nextLine(); row++;
@@ -130,7 +132,7 @@ public class Matriks {
             M.element[row -1][1] = Double.parseDouble(arrRow[0]);
             Yvalue.add(Double.parseDouble(arrRow[1]));
         } //File has no more next line
-        col = Yvalue.size()+1; 
+        col = Yvalue.size() + 1; 
         M.baris = row; M.kolom = col;
 
         //Mengisi elemen augmented matrix
@@ -169,9 +171,11 @@ public class Matriks {
         }
         for (int i = 0; i < M1.baris; i++){
             for (int j = M1.kolom; j < M1.kolom + M2.kolom; j++){
-                New.element[i][j] = M2.element[i][j];
+                NewM.element[i][j] = M2.element[i][j];
             }
         }
+
+        return NewM;
     }
 
     public static Matriks Kofaktor(Matriks M) {
@@ -929,10 +933,37 @@ public class Matriks {
         
     }
 
+    public static void printGauss(Matriks M) {
+        // Prekondisi : Matriks dalam keadaan Echelon Form
+
+            
+        for (int i = 0; i < M.baris; i++) {
+            for (int j = 0; j < M.kolom - 1; j++) {
+                if (M.element[i][j] != 0) {
+                    // Cek atas
+                    int goUp = 1;
+                    while ((i - goUp) >= 0) {
+                        double temp = M.element[i - goUp][j];
+                        for(int m = 0; m < M.kolom; m++) {
+                            M.element[i - goUp][m] -= M.element[i][m] * temp / M.element[i][j];
+                                
+                        }
+                        goUp++;
+                    }
+                    break;
+                } else {
+                    continue;
+                }
+            }
+        }
+
+        Matriks.printGaussJordan(M);
+    }
+
     public static void Interpolasi() {
         int N;
         double nilaiX;
-        String input;
+        char input = 'Y';
 
         System.out.println("Anda ingin memasukkan berapa titik?");
         Scanner scan = new Scanner(System.in);
@@ -960,9 +991,9 @@ public class Matriks {
         System.out.printf(" " + interpolasiReduced.element[0][interpolasiReduced.kolom - 1]);
         for (int k = 1; k < interpolasiReduced.baris; k++) {
             if (interpolasiReduced.element[k][interpolasiReduced.kolom - 1] >= 0) {
-                System.out.printf(" + " + interpolasiReduced.element[k][interpolasiReduced.kolom - 1] + "x" + k);
+                System.out.printf(" + " + interpolasiReduced.element[k][interpolasiReduced.kolom - 1] + "x^" + k);
             } else {
-                System.out.printf(" " + interpolasiReduced.element[k][interpolasiReduced.kolom - 1] + "x" + k);
+                System.out.printf(" " + interpolasiReduced.element[k][interpolasiReduced.kolom - 1] + "x^" + k);
             }
         }
         System.out.printf("%n");
@@ -980,9 +1011,9 @@ public class Matriks {
             /*********** BUAT INDRA ****************/
             // Write Filenya di sini aja
             System.out.println("Apakah anda ingin mengestimasi nilai x lain? (Y/N)");
-            input = scan.nextLine();
-        } while (input == "Y");
+            input = scan.next().charAt(0);
+        } while (input == 'Y');
 
-        scan.close();
+        
     }
 }
