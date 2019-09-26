@@ -11,7 +11,7 @@ public class main{
         Matriks solusiX = new Matriks();
         run = true;
         char keluar;
-        Matriks m = new Matriks();
+        Double Det;
 
         //INPUT
         
@@ -47,30 +47,26 @@ public class main{
                     sub_input = scan.nextInt();
                 }
                 switch (sub_input) {
-                    case 1:
+                    case 1: //Gauss
                     Matriks.fileOrKeyboard(M);
                     Matriks.TulisMatriks(M.SPLGauss());
                     Matriks.printGauss(M.SPLGauss());
                     break;
                     
-                    case 2:
+                    case 2: //Gauss-Jordan
                     Matriks.fileOrKeyboard(M);
                     Matriks.TulisMatriks(M.SPLGaussJordan());
                     Matriks.printGaussJordan(M.SPLGaussJordan());
                     break;
                     
-                    case 3:
+                    case 3: //Invers
                     Matriks.fileOrKeyboard(M);
                     Matriks.TulisMatriks(Matriks.SPLInvers(M));
                     solusiX = Matriks.SPLInvers(M);
-                    System.out.println("Solusi dari Sistem Persamaan Linier yang diperoleh:");
-                    for (int i = 0; i < M.baris; i++){
-                        for (int j = 0; j <M.kolom; j++){
-                            System.out.println("X"+ (i+1) + solusiX.element[i][j] );
-                        }
-                    }
+                    solusiX.TulisSolusiTunggal(solusiX);
                     break;
-                    case 4:
+
+                    case 4: //Cramers
                     Matriks.fileOrKeyboard(M);
                     Matriks.CramersRule(M);
                     break;   
@@ -88,20 +84,26 @@ public class main{
                 sub_input = scan.nextInt();
             }
             switch(sub_input){
-                case 1:
-                Matriks.fileOrKeyboard(M);
-                System.out.println(Math.round(M.DeterminanGauss()*100.0)/100.0);
+                case 1: //DetGauss
+                Matriks.fileOrKeyboardDet(M);
+                Det = Math.round(M.DeterminanGauss()*100.0)/100.0;
+                M.TulisDeterminan(Det);
                 break;
-                case 2:
-                Matriks.fileOrKeyboard(M);
-                System.out.println(Math.round(Matriks.DetCofactor(M)*100.0)/100.0);
+
+                case 2: //DetCofactor
+                Matriks.fileOrKeyboardDet(M);
+                Det = Math.round(Matriks.DetCofactor(M)*100.0)/100.0;
+                M.TulisDeterminan(Det);
                 break;
-                case 3:
-                Matriks.fileOrKeyboard(M);
-                System.out.println(Math.round(Matriks.DetSarrus(M)*100.0)/100.0);
+
+                case 3: //Sarrus
+                Matriks.fileOrKeyboardDet(M);
+                Det = Math.round(Matriks.DetSarrus(M)*100.0)/100.0;
+                M.TulisDeterminan(Det);
                 break;
             }
             break;
+
             case 3:
             System.out.println("1. Dengan Adjoin Matriks");
             System.out.println("2. Dengan Metode GaussJordan");
@@ -112,24 +114,31 @@ public class main{
                     sub_input = scan.nextInt();
                 }
                 switch(sub_input){
-                case 1:
+                case 1: //Invers
                 Matriks.fileOrKeyboard(M);
                 Matriks.TulisMatriks(Matriks.InversDetMatriks(M));
+                M.procSaveMatriks(Matriks.InversDetMatriks(M));
                 break;
-                case 2:
+
+                case 2: //GaussJordan
                 Matriks.fileOrKeyboard(M);
                 Matriks.TulisMatriks(Matriks.InversGaussMatriks(M));
+                M.procSaveMatriks(Matriks.InversGaussMatriks(M));
                 break;
                 }
             break;
             case 4:
             Matriks.fileOrKeyboard(M);
             Matriks.TulisMatriks(Matriks.Kofaktor(M));
+            M.procSaveMatriks(Matriks.Kofaktor(M));
             break;
+
             case 5:
             Matriks.fileOrKeyboard(M);
             Matriks.TulisMatriks(Matriks.Adjoin(M));
+            M.procSaveMatriks(Matriks.Adjoin(M));
             break;
+
             case 6:
             Matriks.Interpolasi();
             break;
