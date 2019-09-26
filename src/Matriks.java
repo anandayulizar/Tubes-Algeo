@@ -25,8 +25,6 @@ public class Matriks {
                 M.element[i][j] = scan.nextDouble();
             }
         }
-
-        
     }
 
     public static void FileName (String fname) {
@@ -160,6 +158,40 @@ public class Matriks {
                 }
             }  
         }
+        boolean in=false; String fname="";
+            MenuSave(in);
+            if (in) {
+                FileName(fname);
+                OpenSaveFile(fname);
+                SaveFileMatriks(M);
+                CloseSaveFile();
+            }
+    }
+
+    public static void TulisDeterminan (double det) {
+        System.out.println(det);
+        boolean in=false; String fname="";
+            MenuSave(in);
+            if (in) {
+                FileName(fname);
+                OpenSaveFile(fname);
+                SaveFileDeterminan(det);
+                CloseSaveFile();
+            }
+    }
+
+    public static void TulisSolusiTunggal (Matriks M) {
+        for (int i=0; i<M.baris; i++) {
+            System.out.println("x" + (i+1) + "= " + M.element[i][0]);
+        }
+        boolean in=false; String fname="";
+        MenuSave(in);
+        if (in) {
+            FileName(fname);
+            OpenSaveFile(fname);
+            SaveFileSolusi(SolusiX);
+            CloseSaveFile();
+        }
     }
 
     public static Matriks GabungKolMatriks(Matriks M1,Matriks M2){
@@ -285,9 +317,7 @@ public class Matriks {
                 }
             } 
         }
-            
         
-                
         for (int i = 0; i < tempM.baris; i++) {
             int lead1 = 0;
             boolean found = false;
@@ -296,7 +326,6 @@ public class Matriks {
                 if (tempM.element[i][lead1] != 0) {
                     found = true;
                     temp2 = tempM.element[i][lead1];
-                    
                 } else {
                     lead1 += 1;
                 }
@@ -304,7 +333,6 @@ public class Matriks {
             for (int j = 0; j < tempM.kolom; j++) {
                 tempM.element[i][j] /= temp2;
                 MInversIdentitas.element[i][j] /= temp2;
-
             }
         }
     
@@ -326,7 +354,6 @@ public class Matriks {
                     continue;
                 }
             }
-
         }
 
         for (int i = 0; i < MInversIdentitas.baris; i++) {
@@ -516,22 +543,7 @@ public class Matriks {
         if (Matriks.DetCofactor(NewM)==0) {
             System.out.println("Hasil tidak dapat dihitung. Silakan pilih operasi lain.");
         } else {
-            for (int i=0; i<SolusiX.baris; i++) {
-                if (i==SolusiX.baris-1) {
-                    System.out.println("x" + (i+1) + "= " + SolusiX.element[i][0]);
-                } else {
-                    System.out.print("x" + (i+1) + "= " + SolusiX.element[i][0] + " ");
-                }
-            }
-
-            boolean in=false; String fname="";
-            MenuSave(in);
-            if (in) {
-                FileName(fname);
-                OpenSaveFile(fname);
-                SaveFileSolusi(SolusiX);
-                CloseSaveFile();
-            }
+            TulisSolusiTunggal(SolusiX);
         }
     }
 
@@ -852,8 +864,17 @@ public class Matriks {
     public static void printGaussJordan(Matriks M) {
         // Prekondisi: Matriks dalam bentuk reduced Echelon Form atau Echelon Form
         // Cek apakah matriks memiliki solusi atau tidak
+        boolean in=false; String fname="";
+
         if (!isPunyaSolusi(M)) {
             System.out.println("Tidak punya solusi");
+            MenuSave(in);
+            if (in) {
+                FileName(fname);
+                OpenSaveFile(fname);
+                sfile.format("Tidak punya solusi");
+                CloseSaveFile();
+            }
         } else if (Matriks.isAllSolusiTunggal(M)) {
             for (int i = 0; i < M.baris; i++) {
                         int j = 0;
@@ -862,8 +883,7 @@ public class Matriks {
                                     j++;
                                 }
                                 // if (j != M.kolom) {
-                                System.out.printf(M.element[i][j] + "x" + (j+1));
-                                System.out.printf(" = " + M.element[i][M.kolom-1] + "%n");
+                                TulisSolusiTunggal(M);
                                 // }
                             }
                     }
@@ -903,7 +923,6 @@ public class Matriks {
             for (int i = 0; i < M.baris; i++) {
                 int j = 0;
                 if(!Matriks.isKolAllZero(M, i)) {
-                    
                     while ((M.element[i][j] == 0) && (j < M.kolom)) {
                         j++;
                     }
@@ -935,8 +954,6 @@ public class Matriks {
 
     public static void printGauss(Matriks M) {
         // Prekondisi : Matriks dalam keadaan Echelon Form
-
-            
         for (int i = 0; i < M.baris; i++) {
             for (int j = 0; j < M.kolom - 1; j++) {
                 if (M.element[i][j] != 0) {
@@ -956,7 +973,6 @@ public class Matriks {
                 }
             }
         }
-
         Matriks.printGaussJordan(M);
     }
 
