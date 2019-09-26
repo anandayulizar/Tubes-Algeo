@@ -213,22 +213,16 @@ public class Matriks {
     public static Matriks Kofaktor(Matriks M) {
         Matriks MKofaktor = new Matriks(M.baris, M.kolom);
         Matriks MMinor = new Matriks(M.baris - 1, M.kolom - 1);
-        for (int i = 0; i < M.baris; i++){
-            for (int j = 0; j < M.kolom; j++){
-                for (int idxbar = 0; idxbar < M.baris - 1; idxbar++){
-                    for (int idxkol = 0; idxkol < M.kolom - 1; idxkol++){
-                        int idx_bar = idxbar+1;
-                        int idx_kol = idxkol+1;
-                        if(idx_bar > M.baris - 1 ){
-                            idx_bar = idx_bar - M.baris;
-                        }
-                        if(idx_kol > M.kolom - 1 ){
-                            idx_kol = idx_kol - M.kolom;
-                        }
-                        MMinor.element[idxbar][idxkol] = M.element[idx_bar][idx_kol];    
+        for (int k=0; k<M.kolom; k++) { //ITERASI KOLOM YANG DIAMBIL, BARIS TETAP (1)
+            int row = 0;
+            for (int i=1; i<M.baris; i++) { //ITERASI BARIS KOFAKTOR
+                int col = 0;
+                for (int j=0; j<M.kolom; j++) { //ITERASI KOLOM KOFAKTOR
+                    if (j!=k) {
+                        MKofaktor.element[row][col] = M.element[i][j];
+                        col+=1;
                     }
-                }
-                MKofaktor.element[i][j] = DetSarrus(MMinor);
+                } row+=1;
             }
         }
         return (MKofaktor);
@@ -500,6 +494,7 @@ public class Matriks {
         Matriks c = new Matriks (M.baris,1);
         Matriks SolusiX = new Matriks (M.kolom,1);
         Matriks NewM = new Matriks(M.baris, M.kolom-1);
+        Matriks tempM = new Matriks(NewM.baris, NewM.kolom);
 
         for (int bar = 0; bar < M.baris; bar++) {
             c.element[bar][0] = M.element[bar][M.kolom-1];
@@ -511,11 +506,11 @@ public class Matriks {
             }
         }
         for (int i = 0; i < M.baris; i++){
-            SolusiX.element[i][0] = KaliMatriks(InversDetMatriks(NewM), c).element[i][0];
+            tempM = KaliMatriks(InversGaussMatriks(NewM), c);
+            SolusiX.element[i][0] = tempM.element[i][0];
         }
         return SolusiX;
     }
-
     public static void CramersRule (Matriks M) {
         Matriks b = new Matriks (M.baris,1);
         Matriks SolusiX = new Matriks (M.baris,1);
