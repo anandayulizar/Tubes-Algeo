@@ -179,27 +179,27 @@ public class Matriks {
     }
 
     public static Matriks MatriksMinor(int m, int n, Matriks M) { //m = baris yg tak termasuk, n = kolom yang tak termasuk
-        Matriks Minor = new Matriks(M.baris-1, M.kolom-1);
-        int bar = -1;
+        Matriks Minor = new Matriks((M.baris-1), (M.kolom-1));
+        int bar = 0;
+        int kol = 0;
         for (int i = 0; i < M.baris; i++){
-            if (i != m){
-                bar++;
-            }
-            int kol = -1;
             for (int j = 0; j < M.kolom; j++){
-                if( j!= n){
-                    kol++;
+                if ((i != m) && ( j!= n)){
+                    Minor.element[bar][kol++] = M.element[i][j];
+                    if(kol == (M.kolom-1)){
+                        kol = 0;
+                        bar++;
+                    }
                 }
-                Minor.element[bar][kol] = M.element[i][j];
             }
-        }   
+        }
         return Minor;
     }
 
     public static Matriks Kofaktor(Matriks M) {
         Matriks Cofactor = new Matriks(M.baris, M.kolom);
-        for (int i=0; i<M.baris; i++) { 
-            for (int j=0; j<M.kolom; j++) {
+        for (int i = 0; i < M.baris; i++) { 
+            for (int j = 0; j < M.kolom; j++) {
                 Cofactor.element[i][j] = DetCofactor(MatriksMinor(i,j,M)) * Math.pow(-1,(i+j));
             }
         }
