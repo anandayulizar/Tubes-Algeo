@@ -147,6 +147,17 @@ public class Matriks {
         CloseFile();
     }
 
+    public static void procSaveMatriks() {
+        boolean in=false; String fname="";
+        MenuSave(in);
+        if (in) {
+            FileName(fname);
+            OpenSaveFile(fname);
+            SaveFileMatriks(M);
+            CloseSaveFile();
+        }
+    }
+
     public static void TulisMatriks(Matriks M) {
         for (int i = 0; i < M.baris; i++) {
             for (int j = 0; j < M.kolom; j++) {
@@ -160,14 +171,6 @@ public class Matriks {
                 }
             }  
         }
-        boolean in=false; String fname="";
-            MenuSave(in);
-            if (in) {
-                FileName(fname);
-                OpenSaveFile(fname);
-                SaveFileMatriks(M);
-                CloseSaveFile();
-            }
     }
 
     public static void TulisDeterminan (double det) {
@@ -289,7 +292,6 @@ public class Matriks {
 
     public static Matriks InversGaussMatriks(Matriks M){
         Matriks MInversIdentitas = new Matriks(M.baris, M.kolom);
-        Matriks temp = new Matriks(M.baris,M.kolom);
         MakeMatriksIdentitas(MInversIdentitas);
         Matriks tempM = M.CopyMatriks();
         for (int brs = 1; brs < M.baris; brs++) {

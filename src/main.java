@@ -6,12 +6,11 @@ public class main{
 
         //KAMUS
         boolean run;
-        int input, sub_input, fileOrKey;
+        int input, sub_input;
         Matriks M = new Matriks();
         Matriks solusiX = new Matriks();
         run = true;
         char keluar;
-        String inFile;
 
         //INPUT
         
