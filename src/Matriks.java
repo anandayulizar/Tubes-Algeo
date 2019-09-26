@@ -31,26 +31,58 @@ public class Matriks {
 
     private Scanner file;
 
-    public void BacaFileMatriks(Matriks M, String s) {
-        //Kamus Lokal
-        int row=0, col=0;
-        
-        //Algoritma
+    public void OpenFile (String s) {
         try {
             file = new Scanner (new File("%s", s));
         } catch (Exception e) {
             System.out.println("File not found");
         }
+    }
 
+    public void CloseFile () {
+        file.close();
+    }
+
+    public void ReadMatrixFile(Matriks M, String s) {
+        //Algoritma
+        OpenFile(s);
+        int row=0;
         while(file.hasNextLine()) {
             String line = file.nextLine(); row++;
             String arrRow [] = line.split(" ");
-            col = arrRow.length;
+            int col = arrRow.length;
 
-            for (int i=0; i<=col; i++) {
+            for (int i=0; i<col; i++) {
                 M.element[row-1][i] = Double.parseDouble(arrRow[i]);
             }
+        } //File has no more next line
+        M.baris = row; M.kolom = col;
+        CloseFile();
+    }
+
+    public void ReadInterpolasiFile (Matriks M, String s) {
+        OpenFile(s);
+        int row=0;
+        ArrayList<Double> Yvalue = new ArrayList<Double>(); //array dinamis
+        while(file.hasNextLine()) {
+            String line = file.nextLine(); row++;
+            String arrRow [] = line.split(" ");
+            M.element[row-1][1] = Double.parseDouble(arrRow[0]);
+            Yvalue.add(Double.parseDouble(arrRow[1]));
+        } //File has no more next line
+        col = Yvalue.length+1; 
+        M.baris = row; M.kolom = col;
+
+        //Mengisi elemen augmented matrix
+        for (int i=0; i<M.baris; i++) {
+            M.element[i][M.kolom-1] = Yvalue.get(i);
+            for (int j=0; j<M.kolom-1; j++) {
+                if (j!=1) {
+                    M.element[i][j] = Math.pow(M.element[i][1], i);
+                }
+            }
         }
+        CloseFile();
     }
 
     public static void TulisMatriks(Matriks M) {
@@ -101,9 +133,9 @@ public class Matriks {
         return (MKofaktor);
     }
     public static Matriks Transpose(Matriks M){
-        Matriks MTranspose = new Matriks(M.baris, M.kolom);
-        for (int i = 0; i < M.baris; i++){
-            for (int j = 0; j < M.kolom; j++){
+        Matriks MTranspose = new Matriks(M.kolom, M.baris);
+        for (int i = 0; i < M.kolom; i++){
+            for (int j = 0; j < M.baris; j++){
                 MTranspose.element [i][j] = M.element[j][i];
             }
         }
@@ -402,7 +434,7 @@ public class Matriks {
                 if (i==SolusiX.length-1) {
                     System.out.println("x" + i + ": " + SolusiX[i]);
                 } else {
-                    System.out.print("x" + i + ": " + SolusiX[i] + "");
+                    System.out.print("x" + (i+1) + ": " + SolusiX[i] + " ");
                 }
             }
         }
