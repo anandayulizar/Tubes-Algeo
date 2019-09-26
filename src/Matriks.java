@@ -1,5 +1,6 @@
 import java.util.*;
 import java.io.*;
+import java.lang.*;
 import java.util.Scanner;
 
 import java.io.BufferedReader;
@@ -39,26 +40,58 @@ public class Matriks {
 
     private Scanner file;
 
-    public void BacaFileMatriks(Matriks M, String s) {
-        //Kamus Lokal
-        int row=0, col=0;
-        
-        //Algoritma
+    public void OpenFile (String s) {
         try {
             file = new Scanner (new File("%s", s));
         } catch (Exception e) {
             System.out.println("File not found");
         }
+    }
 
+    public void CloseFile () {
+        x.close();
+    }
+
+    public void ReadMatrixFile(Matriks M, String s) {
+        //Algoritma
+        OpenFile(s);
+        int row=0;
         while(file.hasNextLine()) {
             String line = file.nextLine(); row++;
             String arrRow [] = line.split(" ");
-            col = arrRow.length;
+            int col = arrRow.length;
 
-            for (int i=0; i<=col; i++) {
-                M.element[row-1][i] = parseDouble(arrRow[i]);
+            for (int i=0; i<col; i++) {
+                M.element[row-1][i] = Double.parseDouble(arrRow[i]);
+            }
+        } //File has no more next line
+        M.baris = row; M.kolom = col;
+        CloseFile();
+    }
+
+    public void ReadInterpolasiFile (Matriks M, String s) {
+        OpenFile(s);
+        int row=0;
+        ArrayList<Double> Yvalue = new ArrayList<Double>(); //array dinamis
+        while(file.hasNextLine()) {
+            String line = file.nextLine(); row++;
+            String arrRow [] = line.split(" ");
+            M.element[row-1][1] = Double.parseDouble(arrRow[0]);
+            Yvalue.add(Double.parseDouble(arrRow[1]));
+        } //File has no more next line
+        col = Yvalue.length+1; 
+        M.baris = row; M.kolom = col;
+
+        //Mengisi elemen augmented matrix
+        for (int i=0; i<M.baris; i++) {
+            M.element[i][M.kolom-1] = Yvalue.get(i);
+            for (int j=0; j<M.kolom-1; j++) {
+                if (j!=1) {
+                    M.element[i][j] = Math.pow(M.element[i][1], i);
+                }
             }
         }
+        CloseFile();
     }
 
     public static void TulisMatriks(Matriks M) {
@@ -146,9 +179,9 @@ public class Matriks {
         return (MKofaktor);
     }
     public static Matriks Transpose(Matriks M){
-        Matriks MTranspose = new Matriks(M.baris, M.kolom);
-        for (int i = 0; i < M.baris; i++){
-            for (int j = 0; j < M.kolom; j++){
+        Matriks MTranspose = new Matriks(M.kolom, M.baris);
+        for (int i = 0; i < M.kolom; i++){
+            for (int j = 0; j < M.baris; j++){
                 MTranspose.element [i][j] = M.element[j][i];
             }
         }
@@ -470,7 +503,17 @@ public class Matriks {
         }
         return SolusiX;
 
-        //Print nya belum
+        if (Matriks.DetCofactor(NewM)==0) {
+            System.out.println("Hasil tidak dapat dihitung. Silakan pilih operasi lain.");
+        } else {
+            for (int i=0; i<SolusiX.length; i++) {
+                if (i==SolusiX.length-1) {
+                    System.out.println("x" + i + ": " + SolusiX[i]);
+                } else {
+                    System.out.print("x" + (i+1) + ": " + SolusiX[i] + " ");
+                }
+            }
+        }
     }
 
     public void TukarBaris(int a, int b) {
@@ -552,8 +595,43 @@ public class Matriks {
         return allZero;
     }
 
+    public static boolean isBarisPunyaSolusi(Matriks M, int brs) {
+        boolean barisPunyaSolusi = false;
+        int j = 0;
+
+        if (isKolAllZero(M, brs)) {
+            barisPunyaSolusi = true;
+        } else {
+            while ((j < M.kolom -1) && (!barisPunyaSolusi)) {
+                if (M.element[brs][j] != 0) {
+                    barisPunyaSolusi = true;
+                } else {
+                    j++;
+                }
+            }
+        }
+
+        return barisPunyaSolusi;
+    }
+
+    public static boolean isPunyaSolusi(Matriks M) {
+        boolean punyaSolusi = true;
+        int i = 0;
+
+        while ((i < M.baris) && (punyaSolusi)) {
+            if (!isBarisPunyaSolusi(M, i)) {
+                punyaSolusi = false;
+            } else {
+                i++;
+            }
+        }
+
+        return punyaSolusi;
+    }
+
     /* Tinggal atur outputnya mau gimana */
-    /*public static void SPLGauss(Matriks M) {
+    public static void SPLGauss(Matriks M) {
+        // Fungsi ini untuk mengecek tahap per tahap eliminasi Gauss untuk menemukan kesalahan
         Matriks tempM = M.CopyMatriks();
         int k = 1;
 
@@ -561,62 +639,70 @@ public class Matriks {
         System.out.println("Tahap pertukaran baris");
         Matriks.TulisMatriks(tempM);
 
-        for (int brs = 1; brs < M.baris; brs++) {
-            for (int kol = 0; kol < brs; kol++) {
-                if (isKolAllZero(tempM, brs)) {
-                    break;
-                }
-                if (isKolAllZero(tempM, kol)) {
-                    continue;
-                }
-                int kol2 = kol;
-                if (tempM.element[kol][kol2] == 0) {
+        int brs = 1;
+        while ((brs < M.baris) && (isPunyaSolusi(tempM))) {
+            int kol = 0;
+            while ((kol < brs) && (isPunyaSolusi(tempM)) && (!isKolAllZero(tempM, brs))) {
+                if (!isKolAllZero(tempM, kol)) {
+                    int kol2 = kol;
+                while (tempM.element[kol][kol2] == 0) {
                     kol2++;
                 }
                 double temp = tempM.element[brs][kol2];
                 for (int i = 0; i < M.kolom; i++) {
                     tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol2]);                
                 }
+                kol++;
                 System.out.println("Pengurangan baris tahap ke-" + k);
                 Matriks.TulisMatriks(tempM);
                 k++; 
+                }  
             }
+            brs++;
         }
 
         // Membagi tiap baris dengan leading 1
-        System.out.println("Membagi tiap baris dengan leading 1");
-        tempM.divideByLeading1();
-        Matriks.TulisMatriks(tempM);
-    }*/
+        if(isPunyaSolusi(tempM)) {
+            System.out.println("Membagi tiap baris dengan leading 1");
+            tempM.divideByLeading1();
+            Matriks.TulisMatriks(tempM);
+        }
+        
+    }
 
     public Matriks SPLGauss() {
         Matriks tempM = this.CopyMatriks();
 
         tempM.setLeadingOne();
 
-        for (int brs = 1; brs < this.baris; brs++) {
-            for (int kol = 0; kol < brs; kol++) {
-                if (isKolAllZero(tempM, brs)) {
-                    break;
-                }
-                int kol2 = kol;
-                if (tempM.element[kol][kol2] == 0) {
+        int brs = 1;
+        while ((brs < this.baris) && (isPunyaSolusi(tempM))) {
+            int kol = 0;
+            while ((kol < brs) && (isPunyaSolusi(tempM)) && (!isKolAllZero(tempM, brs))) {
+                if (!isKolAllZero(tempM, kol)) {
+                    int kol2 = kol;
+                while (tempM.element[kol][kol2] == 0) {
                     kol2++;
                 }
                 double temp = tempM.element[brs][kol2];
                 for (int i = 0; i < this.kolom; i++) {
                     tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol2]);                
                 }
+                kol++;
+                }  
             }
+            brs++;
         }
-
         // Membagi tiap baris dengan leading 1
-        tempM.divideByLeading1();
+        if(isPunyaSolusi(tempM)) {
+            tempM.divideByLeading1();
+        }
 
         return tempM;
     }
 
     public static void SPLGaussJordan(Matriks M) {
+        // Fungsi ini untuk mengecek tahap per tahap eliminasi Gauss Jordan untuk menemukan kesalahan
         Matriks tempM = M.CopyMatriks();
         int k = 1;
 
@@ -624,120 +710,133 @@ public class Matriks {
         System.out.println("Tahap pertukaran baris");
         Matriks.TulisMatriks(tempM);
 
-        for (int brs = 1; brs < M.baris; brs++) {
-            for (int kol = 0; kol < brs; kol++) {
-                if (isKolAllZero(tempM, brs)) {
-                    break;
-                }
-                int kol2 = kol;
+        int brs = 1;
+        while ((brs < M.baris) && (isPunyaSolusi(tempM))) {
+            int kol = 0;
+            while ((kol < brs) && (isPunyaSolusi(tempM)) && (!isKolAllZero(tempM, brs))) {
+                if (!isKolAllZero(tempM, kol)) {
+                    int kol2 = kol;
                 while (tempM.element[kol][kol2] == 0) {
                     kol2++;
                 }
                 double temp = tempM.element[brs][kol2];
                 for (int i = 0; i < M.kolom; i++) {
-                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol2]);                      
+                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol2]);                
                 }
+                kol++;
                 System.out.println("Pengurangan baris tahap ke-" + k);
                 Matriks.TulisMatriks(tempM);
                 k++; 
+                }  
             }
+            brs++;
         }
 
         // Membagi tiap baris dengan leading 1
-        System.out.println("Membagi tiap baris dengan leading 1");
-        tempM.divideByLeading1();
-        Matriks.TulisMatriks(tempM);
+        if(isPunyaSolusi(tempM)) {
+            System.out.println("Membagi tiap baris dengan leading 1");
+            tempM.divideByLeading1();
+            Matriks.TulisMatriks(tempM);
 
-        // Matriks telah sampai pada Echelon Form
-        for (int i = 0; i < tempM.baris; i++) {
-            for (int j = 0; j < tempM.kolom - 1; j++) {
-                if (tempM.element[i][j] != 0) {
-                    // Cek atas
-                    int goUp = 1;
-                    while ((i - goUp) >= 0) {
-                        double temp = tempM.element[i - goUp][j];
-                        for(int m = 0; m < tempM.kolom; m++) {
-                            tempM.element[i - goUp][m] -= tempM.element[i][m] * temp / tempM.element[i][j];
-                            
+            // Matriks telah sampai pada Echelon Form
+            for (int i = 0; i < tempM.baris; i++) {
+                for (int j = 0; j < tempM.kolom - 1; j++) {
+                    if (tempM.element[i][j] != 0) {
+                        // Cek atas
+                        int goUp = 1;
+                        while ((i - goUp) >= 0) {
+                            double temp = tempM.element[i - goUp][j];
+                            for(int m = 0; m < tempM.kolom; m++) {
+                                tempM.element[i - goUp][m] -= tempM.element[i][m] * temp / tempM.element[i][j];
+                                
+                            }
+                            goUp++;
                         }
-                        goUp++;
+                        break;
+                    } else {
+                        continue;
                     }
-                    break;
-                } else {
-                    continue;
                 }
-            }
         }
 
         System.out.println("Dengan menyederhanakan ke bentuk Reduced Echelon Form,");
         Matriks.TulisMatriks(tempM);
+        }
+        
     }
 
     public Matriks SPLGaussJordan() {
         Matriks tempM = this.SPLGauss();
 
         // Matriks telah sampai pada Echelon Form
-        for (int i = 0; i < tempM.baris; i++) {
-            for (int j = 0; j < tempM.kolom - 1; j++) {
-                if (tempM.element[i][j] != 0) {
-                    // Cek atas
-                    int goUp = 1;
-                    while ((i - goUp) >= 0) {
-                        double temp = tempM.element[i - goUp][j];
-                        for(int m = 0; m < tempM.kolom; m++) {
-                            tempM.element[i - goUp][m] -= tempM.element[i][m] * temp / tempM.element[i][j];
-                            
+        if(isPunyaSolusi(tempM)) {
+            tempM.divideByLeading1();
+
+            // Matriks telah sampai pada Echelon Form
+            for (int i = 0; i < tempM.baris; i++) {
+                for (int j = 0; j < tempM.kolom - 1; j++) {
+                    if (tempM.element[i][j] != 0) {
+                        // Cek atas
+                        int goUp = 1;
+                        while ((i - goUp) >= 0) {
+                            double temp = tempM.element[i - goUp][j];
+                            for(int m = 0; m < tempM.kolom; m++) {
+                                tempM.element[i - goUp][m] -= tempM.element[i][m] * temp / tempM.element[i][j];
+                                
+                            }
+                            goUp++;
                         }
-                        goUp++;
+                        break;
+                    } else {
+                        continue;
                     }
-                    break;
-                } else {
-                    continue;
                 }
             }
         }
-
         return tempM;
     }
 
     public static void printGauss(Matriks M) {
-        // Prekondisi: Matriks dalam bentuk reduced Echelon Form
-        for (int i = 0; i < M.baris; i++) {
-            int j = 0;
-            while ((M.element[i][j] == 0) && (j < M.kolom)) {
-                j++;
-                if (j == M.kolom) {
-                    break;
+        // Prekondisi: Matriks dalam bentuk reduced Echelon Form atau Echelon Form
+        // Cek apakah matriks memiliki solusi atau tidak
+        if (!isPunyaSolusi(M)) {
+            System.out.println("Tidak punya solusi");
+        } else {
+            for (int i = 0; i < M.baris; i++) {
+                int j = 0;
+                while ((M.element[i][j] == 0) && (j < M.kolom)) {
+                    j++;
+                    if (j == M.kolom) {
+                        break;
+                    }
+                }
+                if (j != M.kolom) {
+                System.out.printf(M.element[i][j] + "x" + (j+1));
+                for (int k = j + 1; k < (M.kolom - 1); k++) {
+                    if ((M.element[i][k] > 0) && (M.element[i][k] == 1)) {
+                        System.out.printf(" + " + "x" + (k+1));
+                    } else if (M.element[i][k] == -1) {
+                        System.out.printf(" - " + "x" + (k+1));
+                    } else if (M.element[i][k] > 0) {
+                        System.out.printf(" + " + M.element[i][k] + "x" + (k+1));
+                    } else if (M.element[i][k] < 0) {
+                        System.out.printf(" " + M.element[i][k] + "x" + (k+1));
+                    }
+                }
+                System.out.printf(" = " + M.element[i][M.kolom-1] + "%n");
                 }
             }
-            if (j != M.kolom) {
-            System.out.printf(M.element[i][j] + "x" + (j+1));
-            for (int k = j + 1; k < (M.kolom - 1); k++) {
-                if ((M.element[i][k] > 0) && (M.element[i][k] == 1)) {
-                    System.out.printf(" + " + "x" + (k+1));
-                } else if (M.element[i][k] == -1) {
-                    System.out.printf(" - " + "x" + (k+1));
-                } else if (M.element[i][k] > 0) {
-                    System.out.printf(" + " + M.element[i][k] + "x" + (k+1));
-                } else if (M.element[i][k] < 0) {
-                    System.out.printf(" " + M.element[i][k] + "x" + (k+1));
-                }
-            }
-            System.out.printf(" = " + M.element[i][M.kolom-1] + "%n");
-            }
-            
         }
     }
 
     public static void Interpolasi() {
         int N;
         double nilaiX;
+        String input;
 
         System.out.println("Anda ingin memasukkan berapa titik?");
         Scanner scan = new Scanner(System.in);
         N = scan.nextInt();
-        System.out.println("Anda mengestimasi x berapa?");
-        nilaiX = scan.nextDouble();
         Matriks interpolasi = new Matriks(N, N+1);
         for (int i = 0; i < N; i++) {
             System.out.println("Masukkan titik x" + (i+1) + ": ");
@@ -768,12 +867,21 @@ public class Matriks {
         }
         System.out.printf("%n");
 
-        double hasil = 0;
-        for (int m = 0; m < interpolasiReduced.baris; m ++) {
-            hasil += interpolasiReduced.element[m][interpolasiReduced.kolom - 1] * Math.pow(nilaiX, m);
-        }
+        do {
+            System.out.println("Anda mengestimasi x berapa?");
+            nilaiX = scan.nextDouble();
+            double hasil = 0;
+            for (int m = 0; m < interpolasiReduced.baris; m ++) {
+                hasil += interpolasiReduced.element[m][interpolasiReduced.kolom - 1] * Math.pow(nilaiX, m);
+            }
 
-        System.out.println("Nilai fungsi pada x=" + nilaiX + " dapat ditaksir dengan hasilnya adalah " + hasil);
+            System.out.println(nilaiX + " " + hasil);
+
+            /*********** BUAT INDRA ****************/
+            // Write Filenya di sini aja
+            System.out.println("Apakah anda ingin mengestimasi nilai x lain?");
+            input = scan.nextLine();
+        } while (input == "Y");
 
         scan.close();
     }
