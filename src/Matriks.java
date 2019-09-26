@@ -27,13 +27,29 @@ public class Matriks {
                 M.element[i][j] = scan.nextDouble();
             }
         }
-
-        
     }
 
-    private Scanner file;
+    public static void FileName (String fname) {
+        System.out.println("Name your file:");
+        Scanner scan = new Scanner(System.in);
+        fname = scan.nextLine();
+    }
 
-    public void OpenFile (String s) {
+    public static void MenuSave (boolean in) {
+        System.out.println("Do you want to save your output to a file? <y/n>");
+        Scanner scan = new Scanner(System.in);
+        char x = scan.next().charAt(0);
+
+            if (x=='y') {
+                in = true;
+            } else if (x=='n') {
+                in = false;
+            }
+    }
+
+    private static Scanner file;
+
+    public static void OpenFile (String s) {
         try {
             file = new Scanner (new File("%s", s));
         } catch (Exception e) {
@@ -41,13 +57,13 @@ public class Matriks {
         }
     }
 
-    public void CloseFile () {
+    public static void CloseFile () {
         file.close();
     }
 
-    private Formatter sfile;
+    private static Formatter sfile;
 
-    public void OpenSaveFile(String s) {
+    public static void OpenSaveFile(String s) {
         try {
             sfile = new Formatter("%s", s);
         } catch (Exception e) {
@@ -55,21 +71,25 @@ public class Matriks {
         }
     }
 
-    public void SaveFileSolusi (Matriks M) {
+    public static void SaveFileSolusi (Matriks M) {
         for (int i=0; i<M.baris; i++) {
             if (i==M.baris-1) {
-                sfile.format("x" + (i+1) + ": " + M.element[i][0]);
+                sfile.format("x" + (i+1) + "= " + M.element[i][0]);
             } else {
-                sfile.format("x" + (i+1) + ": " + M.element[i][0] + " ");
+                sfile.format("x" + (i+1) + "= " + M.element[i][0] + " ");
             }
         }
     }
 
-    public void SaveFileMatriks (Matriks M) {
+    public static void SaveFileDeterminan(double D) {
+        sfile.format("&f", D);
+    }
+
+    public static void SaveFileMatriks (Matriks M) {
         for (int i=0; i<M.baris; i++) {
             for (int j=0; j<M.kolom; j++) {
                 if (i==M.baris-1 && j==M.kolom-1) {
-                    sfile.format("%f",M.element[i][j]);
+                    sfile.format("%f", M.element[i][j]);
                 } else if (j==M.kolom-1) {
                     sfile.format(M.element[i][j] + "%n");
                 } else {
@@ -79,11 +99,11 @@ public class Matriks {
         }
     }
 
-    public void CloseSaveFile() {
+    public static void CloseSaveFile() {
         sfile.close();
     }
 
-    public void ReadMatrixFile(Matriks M, String s) {
+    public static void ReadMatrixFile(Matriks M, String s) {
         //Algoritma
         OpenFile(s);
         int row=0;
@@ -101,7 +121,7 @@ public class Matriks {
         CloseFile();
     }
 
-    public void ReadInterpolasiFile (Matriks M, String s) {
+    public static void ReadInterpolasiFile (Matriks M, String s) {
         OpenFile(s);
         int row=0;
         int col = 0;
@@ -109,7 +129,7 @@ public class Matriks {
         while(file.hasNextLine()) {
             String line = file.nextLine(); row++;
             String arrRow [] = line.split(" ");
-            M.element[row-1][1] = Double.parseDouble(arrRow[0]);
+            M.element[row -1][1] = Double.parseDouble(arrRow[0]);
             Yvalue.add(Double.parseDouble(arrRow[1]));
         } //File has no more next line
         col = Yvalue.size() + 1; 
@@ -140,37 +160,41 @@ public class Matriks {
                 }
             }  
         }
+        boolean in=false; String fname="";
+            MenuSave(in);
+            if (in) {
+                FileName(fname);
+                OpenSaveFile(fname);
+                SaveFileMatriks(M);
+                CloseSaveFile();
+            }
     }
 
-    /*public static void SaveFile(Matriks M){
-        try{
-            PrintWriter file = new PrintWriter("file");
-            for (int i = 0 ; i < M.baris; i++){
-                for (int j = 0; j < M.kolom; j++){
-                    file.println(M.element[i][j]);
-                }
+    public static void TulisDeterminan (double det) {
+        System.out.println(det);
+        boolean in=false; String fname="";
+            MenuSave(in);
+            if (in) {
+                FileName(fname);
+                OpenSaveFile(fname);
+                SaveFileDeterminan(det);
+                CloseSaveFile();
             }
-            file.close();
+    }
+
+    public static void TulisSolusiTunggal (Matriks M) {
+        for (int i=0; i<M.baris; i++) {
+            System.out.println("x" + (i+1) + "= " + M.element[i][0]);
         }
-        catch (Exception E){
-            E.printStackTrace();
-            System.out.println("File tidak tersedia");
+        boolean in=false; String fname="";
+        MenuSave(in);
+        if (in) {
+            FileName(fname);
+            OpenSaveFile(fname);
+            SaveFileSolusi(M);
+            CloseSaveFile();
         }
-        */
-    // public static void SaveFile(Matriks M){
-    //     try{
-    //         PrintWriter file = new PrintWriter("file");
-    //         for (int i = 0 ; i < M.baris; i++){
-    //             for (int j = 0; j < M.kolom; j++){
-    //                 file.println(M.element[i][j]);
-    //             }
-    //         }
-    //         file.close();
-    //     }
-    //     catch (Exception E){
-    //         E.printStackTrace();
-    //         System.out.println("File tidak tersedia");
-    //     }
+    }
 
     public static Matriks GabungKolMatriks(Matriks M1,Matriks M2){
         Matriks NewM = new Matriks (M1.baris, M1.kolom + M2.kolom);
@@ -190,23 +214,16 @@ public class Matriks {
 
     public static Matriks Kofaktor(Matriks M) {
         Matriks MKofaktor = new Matriks(M.baris, M.kolom);
-        Matriks MMinor = new Matriks(M.baris - 1, M.kolom - 1);
-        for (int i = 0; i < M.baris; i++){
-            for (int j = 0; j < M.kolom; j++){
-                for (int idxbar = 0; idxbar < M.baris - 1; idxbar++){
-                    for (int idxkol = 0; idxkol < M.kolom - 1; idxkol++){
-                        int idx_bar = idxbar+1;
-                        int idx_kol = idxkol+1;
-                        if(idx_bar > M.baris - 1 ){
-                            idx_bar = idx_bar - M.baris;
-                        }
-                        if(idx_kol > M.kolom - 1 ){
-                            idx_kol = idx_kol - M.kolom;
-                        }
-                        MMinor.element[idxbar][idxkol] = M.element[idx_bar][idx_kol];    
+        for (int k=0; k<M.kolom; k++) { //ITERASI KOLOM YANG DIAMBIL, BARIS TETAP (1)
+            int row = 0;
+            for (int i=1; i<M.baris; i++) { //ITERASI BARIS KOFAKTOR
+                int col = 0;
+                for (int j=0; j<M.kolom; j++) { //ITERASI KOLOM KOFAKTOR
+                    if (j!=k) {
+                        MKofaktor.element[row][col] = M.element[i][j];
+                        col+=1;
                     }
-                }
-                MKofaktor.element[i][j] = DetSarrus(MMinor);
+                } row+=1;
             }
         }
         return (MKofaktor);
@@ -284,9 +301,7 @@ public class Matriks {
                 }
             } 
         }
-            
         
-                
         for (int i = 0; i < tempM.baris; i++) {
             int lead1 = 0;
             boolean found = false;
@@ -295,7 +310,6 @@ public class Matriks {
                 if (tempM.element[i][lead1] != 0) {
                     found = true;
                     temp2 = tempM.element[i][lead1];
-                    
                 } else {
                     lead1 += 1;
                 }
@@ -303,7 +317,6 @@ public class Matriks {
             for (int j = 0; j < tempM.kolom; j++) {
                 tempM.element[i][j] /= temp2;
                 MInversIdentitas.element[i][j] /= temp2;
-
             }
         }
     
@@ -325,7 +338,6 @@ public class Matriks {
                     continue;
                 }
             }
-
         }
 
         for (int i = 0; i < MInversIdentitas.baris; i++) {
@@ -444,20 +456,6 @@ public class Matriks {
         }
     }
 
-    /*public static void SPLGauss(Matriks M) {
-        Matriks tempM = M.CopyMatriks();
-        Matriks SolusiX = new Matriks (M.baris,1);
-        for (int brs = 1; brs < M.baris; brs++) {
-            for (int kol = 0; kol < brs; kol++) {
-                double temp = tempM.element[brs][kol];
-                for (int i = 0; i < (M.kolom - 1); i++) {
-                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol]);
-                    System.out.println("Tahap");
-                    Matriks.TulisMatriks(tempM);
-                }
-            }
-        }
-                }*/
     public void kaliMin() {
         for (int i = 0; i < this.baris; i++) {
             for (int j = 0; j < this.kolom; j++) {
@@ -486,6 +484,7 @@ public class Matriks {
         Matriks c = new Matriks (M.baris,1);
         Matriks SolusiX = new Matriks (M.kolom,1);
         Matriks NewM = new Matriks(M.baris, M.kolom-1);
+        Matriks tempM = new Matriks(NewM.baris, NewM.kolom);
 
         for (int bar = 0; bar < M.baris; bar++) {
             c.element[bar][0] = M.element[bar][M.kolom-1];
@@ -497,11 +496,11 @@ public class Matriks {
             }
         }
         for (int i = 0; i < M.baris; i++){
-            SolusiX.element[i][0] = KaliMatriks(InversDetMatriks(NewM), c).element[i][0];
+            tempM = KaliMatriks(InversGaussMatriks(NewM), c);
+            SolusiX.element[i][0] = tempM.element[i][0];
         }
         return SolusiX;
     }
-
     public static void CramersRule (Matriks M) {
         Matriks b = new Matriks (M.baris,1);
         Matriks SolusiX = new Matriks (M.baris,1);
@@ -529,13 +528,7 @@ public class Matriks {
         if (Matriks.DetCofactor(NewM)==0) {
             System.out.println("Hasil tidak dapat dihitung. Silakan pilih operasi lain.");
         } else {
-            for (int i=0; i<SolusiX.baris; i++) {
-                if (i==SolusiX.baris-1) {
-                    System.out.println("x" + i + ": " + SolusiX.element[i][0]);
-                } else {
-                    System.out.print("x" + (i+1) + ": " + SolusiX.element[i][0] + " ");
-                }
-            }
+            TulisSolusiTunggal(SolusiX);
         }
     }
 
@@ -856,8 +849,17 @@ public class Matriks {
     public static void printGaussJordan(Matriks M) {
         // Prekondisi: Matriks dalam bentuk reduced Echelon Form atau Echelon Form
         // Cek apakah matriks memiliki solusi atau tidak
+        boolean in=false; String fname="";
+
         if (!isPunyaSolusi(M)) {
             System.out.println("Tidak punya solusi");
+            MenuSave(in);
+            if (in) {
+                FileName(fname);
+                OpenSaveFile(fname);
+                sfile.format("Tidak punya solusi");
+                CloseSaveFile();
+            }
         } else if (Matriks.isAllSolusiTunggal(M)) {
             for (int i = 0; i < M.baris; i++) {
                         int j = 0;
@@ -866,8 +868,7 @@ public class Matriks {
                                     j++;
                                 }
                                 // if (j != M.kolom) {
-                                System.out.printf(M.element[i][j] + "x" + (j+1));
-                                System.out.printf(" = " + M.element[i][M.kolom-1] + "%n");
+                                TulisSolusiTunggal(M);
                                 // }
                             }
                     }
@@ -907,7 +908,6 @@ public class Matriks {
             for (int i = 0; i < M.baris; i++) {
                 int j = 0;
                 if(!Matriks.isKolAllZero(M, i)) {
-                    
                     while ((M.element[i][j] == 0) && (j < M.kolom)) {
                         j++;
                     }
@@ -939,8 +939,6 @@ public class Matriks {
 
     public static void printGauss(Matriks M) {
         // Prekondisi : Matriks dalam keadaan Echelon Form
-
-            
         for (int i = 0; i < M.baris; i++) {
             for (int j = 0; j < M.kolom - 1; j++) {
                 if (M.element[i][j] != 0) {
@@ -960,7 +958,6 @@ public class Matriks {
                 }
             }
         }
-
         Matriks.printGaussJordan(M);
     }
 
