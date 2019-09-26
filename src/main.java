@@ -11,6 +11,7 @@ public class main{
         Matriks solusiX = new Matriks();
         run = true;
         char keluar;
+        Matriks m = new Matriks();
 
         //INPUT
         
@@ -47,35 +48,19 @@ public class main{
                 }
                 switch (sub_input) {
                     case 1:
-                    // System.out.println("Apakah anda ingin input matriks melalui file atau keyboard? (1/2)");
-                    // System.out.printf("1. File%n2. Keyboard%n");
-                    // System.out.println("Pilih opsi:");
-                    // fileOrKey = scan.nextInt();
-                    // while ((fileOrKey < 1) || (fileOrKey > 2)) {
-                    //     System.out.println("Input 1 atau 2");
-                    //     System.out.printf("1. File%n2. Keyboard%n");
-                    //     System.out.println("Pilih opsi:");
-                    //     fileOrKey = scan.nextInt();
-                    // }
-                    // if (fileOrKey == 1) {
-                    Matriks.BacaInputMatriks(M);
-                    // } else {
-                    //     System.out.println("Input nama file:");
-                    //     inFile = scan.nextLine();
-                    //     Matriks.ReadMatriksFile(M, inFile);
-                    // }
+                    Matriks.fileOrKeyboard(M);
                     Matriks.TulisMatriks(M.SPLGauss());
                     Matriks.printGauss(M.SPLGauss());
                     break;
                     
                     case 2:
-                    Matriks.BacaInputMatriks(M);
+                    Matriks.fileOrKeyboard(M);
                     Matriks.TulisMatriks(M.SPLGaussJordan());
                     Matriks.printGaussJordan(M.SPLGaussJordan());
                     break;
                     
                     case 3:
-                    Matriks.BacaInputMatriks(M);
+                    Matriks.fileOrKeyboard(M);
                     Matriks.TulisMatriks(Matriks.SPLInvers(M));
                     solusiX = Matriks.SPLInvers(M);
                     System.out.println("Solusi dari Sistem Persamaan Linier yang diperoleh:");
@@ -86,7 +71,7 @@ public class main{
                     }
                     break;
                     case 4:
-                    Matriks.BacaInputMatriks(M);
+                    Matriks.fileOrKeyboard(M);
                     Matriks.CramersRule(M);
                     break;   
                 }
@@ -104,15 +89,15 @@ public class main{
             }
             switch(sub_input){
                 case 1:
-                Matriks.BacaInputMatriks(M);
+                Matriks.fileOrKeyboard(M);
                 System.out.println(Math.round(M.DeterminanGauss()*100.0)/100.0);
                 break;
                 case 2:
-                Matriks.BacaInputMatriks(M);
+                Matriks.fileOrKeyboard(M);
                 System.out.println(Math.round(Matriks.DetCofactor(M)*100.0)/100.0);
                 break;
                 case 3:
-                Matriks.BacaInputMatriks(M);
+                Matriks.fileOrKeyboard(M);
                 System.out.println(Math.round(Matriks.DetSarrus(M)*100.0)/100.0);
                 break;
             }
@@ -128,21 +113,21 @@ public class main{
                 }
                 switch(sub_input){
                 case 1:
-                Matriks.BacaInputMatriks(M);
+                Matriks.fileOrKeyboard(M);
                 Matriks.TulisMatriks(Matriks.InversDetMatriks(M));
                 break;
                 case 2:
-                Matriks.BacaInputMatriks(M);
+                Matriks.fileOrKeyboard(M);
                 Matriks.TulisMatriks(Matriks.InversGaussMatriks(M));
                 break;
                 }
             break;
             case 4:
-            Matriks.BacaInputMatriks(M);
+            Matriks.fileOrKeyboard(M);
             Matriks.TulisMatriks(Matriks.Kofaktor(M));
             break;
             case 5:
-            Matriks.BacaInputMatriks(M);
+            Matriks.fileOrKeyboard(M);
             Matriks.TulisMatriks(Matriks.Adjoin(M));
             break;
             case 6:

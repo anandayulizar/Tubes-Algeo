@@ -14,6 +14,30 @@ public class Matriks {
         this.kolom = n;
     }
 
+    public static void fileOrKeyboard(Matriks M) {
+        int fileOrKey;
+
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Apakah anda ingin input matriks melalui file atau keyboard? (1/2)");
+        System.out.printf("1. File%n2. Keyboard%n");    
+        System.out.println("Pilih opsi:");
+        fileOrKey = scan.nextInt();
+        scan.nextLine();
+        
+        while ((fileOrKey < 1) || (fileOrKey > 2)) {
+            System.out.println("Input 1 atau 2");
+            System.out.printf("1. File%n2. Keyboard%n");
+            System.out.println("Pilih opsi:");
+            fileOrKey = scan.nextInt();
+            scan.nextLine();
+        }
+        if (fileOrKey == 2) {
+            Matriks.BacaInputMatriks(M);
+        } else if (fileOrKey == 1) {
+            M.ReadMatrixFile();
+        }
+    }
+
     public static void BacaInputMatriks(Matriks M) {
         Scanner scan = new Scanner(System.in);
         System.out.println("Masukkan panjang baris matriks!");
@@ -29,13 +53,13 @@ public class Matriks {
         }
     }
 
-    public static void FileName (String fname) {
+    /*public void FileName (String fname) {
         System.out.println("Name your file:");
         Scanner scan = new Scanner(System.in);
         fname = scan.nextLine();
-    }
+    }*/
 
-    public static void MenuSave (boolean in) {
+    public void MenuSave (boolean in) {
         System.out.println("Do you want to save your output to a file? <y/n>");
         Scanner scan = new Scanner(System.in);
         char x = scan.next().charAt(0);
@@ -47,31 +71,31 @@ public class Matriks {
             }
     }
 
-    private static Scanner file;
+    private Scanner file;
 
-    public static void OpenFile (String s) {
+    public void OpenFile () {
         try {
-            file = new Scanner (new File("%s", s));
+            file = new Scanner (new File("case1.txt"));
         } catch (Exception e) {
             System.out.println("File not found");
         }
     }
 
-    public static void CloseFile () {
+    public void CloseFile () {
         file.close();
     }
 
-    private static Formatter sfile;
+    private Formatter sfile;
 
-    public static void OpenSaveFile(String s) {
+    public void OpenSaveFile() {
         try {
-            sfile = new Formatter("%s", s);
+            sfile = new Formatter("newfile.txt");
         } catch (Exception e) {
             System.out.println ("You have an error");
         }
     }
 
-    public static void SaveFileSolusi (Matriks M) {
+    public void SaveFileSolusi (Matriks M) {
         for (int i=0; i<M.baris; i++) {
             if (i==M.baris-1) {
                 sfile.format("x" + (i+1) + "= " + M.element[i][0]);
@@ -81,11 +105,11 @@ public class Matriks {
         }
     }
 
-    public static void SaveFileDeterminan(double D) {
+    public void SaveFileDeterminan(double D) {
         sfile.format("&f", D);
     }
 
-    public static void SaveFileMatriks (Matriks M) {
+    public void SaveFileMatriks (Matriks M) {
         for (int i=0; i<M.baris; i++) {
             for (int j=0; j<M.kolom; j++) {
                 if (i==M.baris-1 && j==M.kolom-1) {
@@ -99,60 +123,71 @@ public class Matriks {
         }
     }
 
-    public static void CloseSaveFile() {
+    public void CloseSaveFile() {
         sfile.close();
     }
 
-    public static void ReadMatrixFile(Matriks M, String s) {
+    public void ReadMatrixFile() {
+        //KAMUS LOKAL
+        double[] tempdouble;
         //Algoritma
-        OpenFile(s);
-        int row=0;
-        int col = 0;
+        OpenFile();
+        int row=0, col=0;
+        ArrayList<double[]> temp = new ArrayList<double[]>(); 
         while(file.hasNextLine()) {
             String line = file.nextLine(); row++;
             String arrRow [] = line.split(" ");
-            col = arrRow.length;
+            col = arrRow.length; 
+            tempdouble = new double[col];
 
             for (int i=0; i<col; i++) {
-                M.element[row-1][i] = Double.parseDouble(arrRow[i]);
+                tempdouble[i] = Double.parseDouble(arrRow[i]);
             }
+            temp.add(tempdouble);
         } //File has no more next line
-        M.baris = row; M.kolom = col;
-        CloseFile();
-    }
-
-    public static void ReadInterpolasiFile (Matriks M, String s) {
-        OpenFile(s);
-        int row=0;
-        int col = 0;
-        ArrayList<Double> Yvalue = new ArrayList<Double>(); //array dinamis
-        while(file.hasNextLine()) {
-            String line = file.nextLine(); row++;
-            String arrRow [] = line.split(" ");
-            M.element[row -1][1] = Double.parseDouble(arrRow[0]);
-            Yvalue.add(Double.parseDouble(arrRow[1]));
-        } //File has no more next line
-        col = Yvalue.size() + 1; 
-        M.baris = row; M.kolom = col;
-
-        //Mengisi elemen augmented matrix
-        for (int i=0; i<M.baris; i++) {
-            M.element[i][M.kolom-1] = Yvalue.get(i);
-            for (int j=0; j<M.kolom-1; j++) {
-                if (j!=1) {
-                    M.element[i][j] = Math.pow(M.element[i][1], i);
-                }
+        this.baris = row;
+        this.kolom = col;
+        this.element = new double[row][col];
+        for (int i = 0; i < this.baris; i++) {
+            tempdouble = temp.get(i);
+            for (int j = 0; j < this.kolom; j++) {
+                this.element[i][j] = tempdouble[j];
             }
         }
         CloseFile();
     }
 
-    public static void procSaveMatriks() {
-        boolean in=false; String fname="";
+    public void ReadInterpolasiFile () {
+        OpenFile();
+        int row=0;
+        int col=0;
+        ArrayList<Double> Xvalue = new ArrayList<Double>();
+        ArrayList<Double> Yvalue = new ArrayList<Double>(); //array dinamis
+        while(file.hasNextLine()) {
+            String line = file.nextLine(); row++;
+            String arrRow [] = line.split(" ");
+            Xvalue.add(Double.parseDouble(arrRow[0]));
+            Yvalue.add(Double.parseDouble(arrRow[1]));
+        } //File has no more next line
+        col = Yvalue.size() + 1; 
+        this.baris = row; this.kolom = col;
+        this.element = new double[row][col];
+
+        //Mengisi elemen augmented matrix
+        for (int i=0; i<this.baris; i++) {
+            this.element[i][this.kolom-1] = Yvalue.get(i);
+            for (int j=0; j<this.kolom-1; j++) {
+                this.element[i][j] = Math.pow(Xvalue.get(i), j);
+            }
+        }
+        CloseFile();
+    }
+
+    public void procSaveMatriks(Matriks M) {
+        boolean in=false;
         MenuSave(in);
         if (in) {
-            FileName(fname);
-            OpenSaveFile(fname);
+            OpenSaveFile();
             SaveFileMatriks(M);
             CloseSaveFile();
         }
@@ -173,27 +208,25 @@ public class Matriks {
         }
     }
 
-    public static void TulisDeterminan (double det) {
+    public void TulisDeterminan (double det) {
         System.out.println(det);
-        boolean in=false; String fname="";
+        boolean in=false;
             MenuSave(in);
             if (in) {
-                FileName(fname);
-                OpenSaveFile(fname);
+                OpenSaveFile();
                 SaveFileDeterminan(det);
                 CloseSaveFile();
             }
     }
 
-    public static void TulisSolusiTunggal (Matriks M) {
+    public void TulisSolusiTunggal (Matriks M) {
         for (int i=0; i<M.baris; i++) {
             System.out.println("x" + (i+1) + "= " + M.element[i][0]);
         }
-        boolean in=false; String fname="";
+        boolean in=false;
         MenuSave(in);
         if (in) {
-            FileName(fname);
-            OpenSaveFile(fname);
+            OpenSaveFile();
             SaveFileSolusi(M);
             CloseSaveFile();
         }
@@ -530,7 +563,7 @@ public class Matriks {
         if (Matriks.DetCofactor(NewM)==0) {
             System.out.println("Hasil tidak dapat dihitung. Silakan pilih operasi lain.");
         } else {
-            TulisSolusiTunggal(SolusiX);
+            M.TulisSolusiTunggal(SolusiX);
         }
     }
 
@@ -851,16 +884,15 @@ public class Matriks {
     public static void printGaussJordan(Matriks M) {
         // Prekondisi: Matriks dalam bentuk reduced Echelon Form atau Echelon Form
         // Cek apakah matriks memiliki solusi atau tidak
-        boolean in=false; String fname="";
+        boolean in=false;
 
         if (!isPunyaSolusi(M)) {
             System.out.println("Tidak punya solusi");
-            MenuSave(in);
+            M.MenuSave(in);
             if (in) {
-                FileName(fname);
-                OpenSaveFile(fname);
-                sfile.format("Tidak punya solusi");
-                CloseSaveFile();
+                M.OpenSaveFile();
+                M.sfile.format("Tidak punya solusi");
+                M.CloseSaveFile();
             }
         } else if (Matriks.isAllSolusiTunggal(M)) {
             for (int i = 0; i < M.baris; i++) {
@@ -870,7 +902,7 @@ public class Matriks {
                                     j++;
                                 }
                                 // if (j != M.kolom) {
-                                TulisSolusiTunggal(M);
+                                M.TulisSolusiTunggal(M);
                                 // }
                             }
                     }
@@ -891,7 +923,7 @@ public class Matriks {
                             j++;
                         }
                     }
-                    for (int k = j+1; k < M.kolom; k++) {
+                    for (int k = j+1; k < M.kolom - 1; k++) {
                         if (M.element[i][k] != 0) {
                             varBebas[k] = 1; // 
                         }
@@ -984,11 +1016,7 @@ public class Matriks {
         }
         
 
-        Matriks.TulisMatriks(interpolasi);
-
         Matriks interpolasiReduced = interpolasi.SPLGaussJordan();
-
-        Matriks.TulisMatriks(interpolasiReduced);
 
         System.out.printf("Maka,%n p" + (N-1) + "(x) =");
         System.out.printf(" " + interpolasiReduced.element[0][interpolasiReduced.kolom - 1]);
