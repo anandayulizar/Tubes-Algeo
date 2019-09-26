@@ -471,8 +471,9 @@ public class Matriks {
 
     public static Matriks SPLInvers(Matriks M){
         Matriks c = new Matriks (M.baris,1);
-        Matriks SolusiX = new Matriks (M.kolom,1);
+        Matriks SolusiX = new MaFungsitriks (M.kolom,1);
         Matriks NewM = new Matriks(M.baris, M.kolom-1);
+        Matriks tempM = new Matriks(NewM.baris, NewM.kolom);
 
         for (int bar = 0; bar < M.baris; bar++) {
             c.element[bar][0] = M.element[bar][M.kolom-1];
@@ -484,11 +485,11 @@ public class Matriks {
             }
         }
         for (int i = 0; i < M.baris; i++){
-            SolusiX.element[i][0] = KaliMatriks(InversDetMatriks(NewM), c).element[i][0];
+            tempM = KaliMatriks(InversGaussMatriks(NewM), c);
+            SolusiX.element[i][0] = tempM.element[i][0];
         }
         return SolusiX;
     }
-
     public static void CramersRule (Matriks M) {
         Matriks b = new Matriks (M.baris,1);
         Matriks SolusiX = new Matriks (M.baris,1);
