@@ -147,7 +147,7 @@ public class Matriks {
         CloseFile();
     }
 
-    public static void procSaveMatriks() {
+    public static void procSaveMatriks(Matriks M) {
         boolean in=false; String fname="";
         MenuSave(in);
         if (in) {
@@ -933,10 +933,40 @@ public class Matriks {
                     currentX++;
                 }
             }
-            
+            MenuSave(in);
+            if (in) {
+                FileName(fname);
+                OpenSaveFile(fname);
+                int currX = 0;
+                for (int i = 0; i < M.baris; i++) {
+                    int j = 0;
+                    if(!Matriks.isKolAllZero(M, i)) {
+                        while ((M.element[i][j] == 0) && (j < M.kolom)) {
+                            j++;
+                        }
+                        while (currentX < j) {
+                            sfile.format("x" + (currX + 1) + " = " + ((char) varBebas[currX]) + "%n");
+                            currX++;
+                        }
+                        sfile.format(M.element[i][j] + "x" + (j+1));
+                        for (int k = j + 1; k < (M.kolom - 1); k++) {
+                            if ((M.element[i][k] > 0) && (M.element[i][k] == 1)) {
+                                sfile.format(" + " + ((char) varBebas[k]));
+                            } else if (M.element[i][k] == -1) {
+                                sfile.format(" - " + ((char) varBebas[k]));
+                            } else if (M.element[i][k] > 0) {
+                                sfile.format(" + " + M.element[i][k] + ((char) varBebas[k]));
+                            } else if (M.element[i][k] < 0) {
+                                sfile.format(" " + M.element[i][k] + ((char) varBebas[k]));
+                            }
+                        }
+                        sfile.format(" = " + M.element[i][M.kolom-1] + "%n");
+                        currX++;
+                    }
+                }
+                CloseSaveFile();
+            }
         }
-            
-        
     }
 
     public static void printGauss(Matriks M) {
@@ -983,12 +1013,7 @@ public class Matriks {
             interpolasi.element[i][interpolasi.kolom - 1] = y;
         }
         
-
-        Matriks.TulisMatriks(interpolasi);
-
         Matriks interpolasiReduced = interpolasi.SPLGaussJordan();
-
-        Matriks.TulisMatriks(interpolasiReduced);
 
         System.out.printf("Maka,%n p" + (N-1) + "(x) =");
         System.out.printf(" " + interpolasiReduced.element[0][interpolasiReduced.kolom - 1]);
@@ -1011,8 +1036,27 @@ public class Matriks {
 
             System.out.println(nilaiX + " " + hasil);
 
-            /*********** BUAT INDRA ****************/
-            // Write Filenya di sini aja
+            boolean in=false; String fname="";
+            MenuSave(in);
+            if (in) {
+                FileName(fname);
+                OpenSaveFile(fname);
+
+                sfile.format("p" + (N-1) + "(x) =");
+                sfile.format(" " + interpolasiReduced.element[0][interpolasiReduced.kolom - 1]);
+                for (int k = 1; k < interpolasiReduced.baris; k++) {
+                    if (interpolasiReduced.element[k][interpolasiReduced.kolom - 1] >= 0) {
+                        sfile.format(" + " + interpolasiReduced.element[k][interpolasiReduced.kolom - 1] + "x^" + k);
+                    } else {
+                        sfile.format(" " + interpolasiReduced.element[k][interpolasiReduced.kolom - 1] + "x^" + k);
+                    }
+                }
+                sfile.format("%n");
+                sfile.format(nilaiX + " " + hasil);
+
+                CloseSaveFile();
+            }
+
             System.out.println("Apakah anda ingin mengestimasi nilai x lain? (Y/N)");
             input = scan.next().charAt(0);
         } while (input == 'Y');
