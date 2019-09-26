@@ -29,9 +29,27 @@ public class Matriks {
         scan.close();
     }
 
-    private Scanner file;
+    public static void FileName (String fname) {
+        System.out.println("Name your file:");
+        Scanner scan = new Scanner(System.in);
+        fname = scan.nextLine();
+    }
 
-    public void OpenFile (String s) {
+    public static void MenuSave (boolean in) {
+        System.out.println("Do you want to save your output to a file? <y/n>");
+        Scanner scan = new Scanner(System.in);
+        char x = scan.next().charAt(0);
+
+            if (x=='y') {
+                in = true;
+            } else if (x=='n') {
+                in = false;
+            }
+    }
+
+    private static Scanner file;
+
+    public static void OpenFile (String s) {
         try {
             file = new Scanner (new File("%s", s));
         } catch (Exception e) {
@@ -39,13 +57,13 @@ public class Matriks {
         }
     }
 
-    public void CloseFile () {
+    public static void CloseFile () {
         file.close();
     }
 
-    private Formatter sfile;
+    private static Formatter sfile;
 
-    public void OpenSaveFile(String s) {
+    public static void OpenSaveFile(String s) {
         try {
             sfile = new Formatter("%s", s);
         } catch (Exception e) {
@@ -53,21 +71,25 @@ public class Matriks {
         }
     }
 
-    public void SaveFileSolusi (Matriks M) {
+    public static void SaveFileSolusi (Matriks M) {
         for (int i=0; i<M.baris; i++) {
             if (i==M.baris-1) {
-                sfile.format("x" + (i+1) + ": " + M.element[i][0]);
+                sfile.format("x" + (i+1) + "= " + M.element[i][0]);
             } else {
-                sfile.format("x" + (i+1) + ": " + M.element[i][0] + " ");
+                sfile.format("x" + (i+1) + "= " + M.element[i][0] + " ");
             }
         }
     }
 
-    public void SaveFileMatriks (Matriks M) {
+    public static void SaveFileDeterminan(double D) {
+        sfile.format("&f", D);
+    }
+
+    public static void SaveFileMatriks (Matriks M) {
         for (int i=0; i<M.baris; i++) {
             for (int j=0; j<M.kolom; j++) {
                 if (i==M.baris-1 && j==M.kolom-1) {
-                    sfile.format("%f",M.element[i][j]);
+                    sfile.format("%f", M.element[i][j]);
                 } else if (j==M.kolom-1) {
                     sfile.format(M.element[i][j] + "%n");
                 } else {
@@ -77,11 +99,11 @@ public class Matriks {
         }
     }
 
-    public void CloseSaveFile() {
+    public static void CloseSaveFile() {
         sfile.close();
     }
 
-    public void ReadMatrixFile(Matriks M, String s) {
+    public static void ReadMatrixFile(Matriks M, String s) {
         //Algoritma
         OpenFile(s);
         int row=0;
@@ -98,14 +120,14 @@ public class Matriks {
         CloseFile();
     }
 
-    public void ReadInterpolasiFile (Matriks M, String s) {
+    public static void ReadInterpolasiFile (Matriks M, String s) {
         OpenFile(s);
         int row=0;
         ArrayList<Double> Yvalue = new ArrayList<Double>(); //array dinamis
         while(file.hasNextLine()) {
             String line = file.nextLine(); row++;
             String arrRow [] = line.split(" ");
-            M.element[row-1][1] = Double.parseDouble(arrRow[0]);
+            M.element[row -1][1] = Double.parseDouble(arrRow[0]);
             Yvalue.add(Double.parseDouble(arrRow[1]));
         } //File has no more next line
         col = Yvalue.size()+1; 
@@ -137,36 +159,6 @@ public class Matriks {
             }  
         }
     }
-
-    /*public static void SaveFile(Matriks M){
-        try{
-            PrintWriter file = new PrintWriter("file");
-            for (int i = 0 ; i < M.baris; i++){
-                for (int j = 0; j < M.kolom; j++){
-                    file.println(M.element[i][j]);
-                }
-            }
-            file.close();
-        }
-        catch (Exception E){
-            E.printStackTrace();
-            System.out.println("File tidak tersedia");
-        }
-        */
-    // public static void SaveFile(Matriks M){
-    //     try{
-    //         PrintWriter file = new PrintWriter("file");
-    //         for (int i = 0 ; i < M.baris; i++){
-    //             for (int j = 0; j < M.kolom; j++){
-    //                 file.println(M.element[i][j]);
-    //             }
-    //         }
-    //         file.close();
-    //     }
-    //     catch (Exception E){
-    //         E.printStackTrace();
-    //         System.out.println("File tidak tersedia");
-    //     }
 
     public static Matriks GabungKolMatriks(Matriks M1,Matriks M2){
         Matriks NewM = new Matriks (M1.baris, M1.kolom + M2.kolom);
@@ -449,20 +441,6 @@ public class Matriks {
         }
     }
 
-    /*public static void SPLGauss(Matriks M) {
-        Matriks tempM = M.CopyMatriks();
-        Matriks SolusiX = new Matriks (M.baris,1);
-        for (int brs = 1; brs < M.baris; brs++) {
-            for (int kol = 0; kol < brs; kol++) {
-                double temp = tempM.element[brs][kol];
-                for (int i = 0; i < (M.kolom - 1); i++) {
-                    tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol]);
-                    System.out.println("Tahap");
-                    Matriks.TulisMatriks(tempM);
-                }
-            }
-        }
-                }*/
     public void kaliMin() {
         for (int i = 0; i < this.baris; i++) {
             for (int j = 0; j < this.kolom; j++) {
@@ -536,10 +514,19 @@ public class Matriks {
         } else {
             for (int i=0; i<SolusiX.baris; i++) {
                 if (i==SolusiX.baris-1) {
-                    System.out.println("x" + i + ": " + SolusiX.element[i][0]);
+                    System.out.println("x" + (i+1) + "= " + SolusiX.element[i][0]);
                 } else {
-                    System.out.print("x" + (i+1) + ": " + SolusiX.element[i][0] + " ");
+                    System.out.print("x" + (i+1) + "= " + SolusiX.element[i][0] + " ");
                 }
+            }
+
+            boolean in=false; String fname="";
+            MenuSave(in);
+            if (in) {
+                FileName(fname);
+                OpenSaveFile(fname);
+                SaveFileSolusi(SolusiX);
+                CloseSaveFile();
             }
         }
     }
