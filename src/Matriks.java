@@ -217,6 +217,8 @@ public class Matriks {
                             MInversIdentitas.element[i][j] = MInversIdentitas.element[i][j] - M.element[i][j] * M.element[i+1][k] / M.element[i][k];
                         }
                     }
+                }
+            }
         Matriks tempM = M.CopyMatriks();
         MakeMatriksIdentitas(MInversIdentitas); 
         for (int brs = 1; brs < M.baris; brs++) {
@@ -225,9 +227,11 @@ public class Matriks {
                 for (int i = 0; i < M.kolom; i++) {
                     tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol]);
                     MInversIdentitas.element[brs][i] = MInversIdentitas.element[brs][i] - (MInversIdentitas.element[kol][i] * temp / tempM.element[kol][kol]);
-                        }
-                    } 
                 }
+            } 
+        }
+            
+        
                 
         for (int i = 0; i < tempM.baris; i++) {
             int lead1 = 0;
@@ -367,7 +371,7 @@ public class Matriks {
         double Det = 0;
 
         //Algoritma
-        if (M.baris==1) {
+        if (M.baris == 1) {
             return M.element[0][0];
         } else {
             for (int k=0; k<M.kolom; k++) { //ITERASI KOLOM YANG DIAMBIL, BARIS TETAP (1)
@@ -388,10 +392,10 @@ public class Matriks {
 
     public static void SPLGauss(Matriks M) {
         Matriks tempM = M.CopyMatriks();
-        Matriks SolusiX = new Matriks [M.baris][1];
+        Matriks SolusiX = new Matriks (M.baris,1);
         for (int brs = 1; brs < M.baris; brs++) {
             for (int kol = 0; kol < brs; kol++) {
-                float temp = tempM.element[brs][kol];
+                double temp = tempM.element[brs][kol];
                 for (int i = 0; i < (M.kolom - 1); i++) {
                     tempM.element[brs][i] = tempM.element[brs][i] - (tempM.element[kol][i] * temp / tempM.element[kol][kol]);
                     System.out.println("Tahap");
@@ -422,8 +426,8 @@ public class Matriks {
     }
 
     public static Matriks SPLInvers(Matriks M){
-        Matriks c = new Matriks [M.baris][1];
-        Matriks SolusiX = new Matriks [M.baris][1];
+        Matriks c = new Matriks (M.baris,1);
+        Matriks SolusiX = new Matriks (M.kolom,1);
         Matriks NewM = new Matriks(M.baris, M.kolom-1);
 
         for (int bar = 0; bar < M.baris; bar++) {
@@ -442,8 +446,8 @@ public class Matriks {
     }
 
     public static Matriks CramersRule (Matriks M) {
-        Matriks b = new Matriks [M.baris][1];
-        MAtriks SolusiX = new Matriks [M.baris][i];
+        Matriks b = new Matriks (M.baris,1);
+        Matriks SolusiX = new Matriks (M.baris,1);
         Matriks NewM = new Matriks(M.baris, M.kolom-1);
         Matriks tempM = new Matriks(NewM.baris, NewM.kolom);
 
@@ -549,7 +553,7 @@ public class Matriks {
     }
 
     /* Tinggal atur outputnya mau gimana */
-    public static void SPLGauss(Matriks M) {
+    /*public static void SPLGauss(Matriks M) {
         Matriks tempM = M.CopyMatriks();
         int k = 1;
 
@@ -583,7 +587,7 @@ public class Matriks {
         System.out.println("Membagi tiap baris dengan leading 1");
         tempM.divideByLeading1();
         Matriks.TulisMatriks(tempM);
-    }
+    }*/
 
     public Matriks SPLGauss() {
         Matriks tempM = this.CopyMatriks();

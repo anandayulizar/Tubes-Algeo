@@ -14,8 +14,8 @@ class Driver {
         // System.out.println(detM);
 
         // Tes Solusi SPL metode Gauss
-        Matriks.SPLGauss(M);
-        Matriks.InversDetMatriks(M);
+        Matriks.Kofaktor(M);
+        Matriks.TulisMatriks(M);
     }
     //SHOW MENU
     
