@@ -2,7 +2,7 @@ class Driver {
     public static void main(String[] args) {
         // Tes Baca & Tulis
         Matriks M = new Matriks();
-        Matriks.BacaMatriks(M);
+        Matriks.BacaFileMatriks(M);
         Matriks.TulisMatriks(M);
 
         // Tes CopyMatriks
@@ -14,10 +14,11 @@ class Driver {
         // System.out.println(detM);
 
         // Tes Solusi SPL metode Gauss
-        Matriks.SPLGauss(M);
-
+        Matriks.Kofaktor(M);
+        Matriks.TulisMatriks(M);
     }
     //SHOW MENU
+    
     
     
 
