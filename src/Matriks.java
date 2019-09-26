@@ -1,19 +1,10 @@
 import java.util.*;
 import java.io.*;
-import java.lang.*;
-import java.util.Scanner;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 public class Matriks {
-    private double[][] element;
-    private int baris;
-    private int kolom;
+    protected double[][] element;
+    protected int baris;
+    protected int kolom;
 
     public Matriks() {}
     // Constructor
@@ -49,7 +40,7 @@ public class Matriks {
     }
 
     public void CloseFile () {
-        x.close();
+        file.close();
     }
 
     public void ReadMatrixFile(Matriks M, String s) {
@@ -796,37 +787,122 @@ public class Matriks {
         return tempM;
     }
 
-    public static void printGauss(Matriks M) {
+    public static boolean isBarisSolusiTunggal(Matriks M, int brs) {
+        boolean barisSolusiTunggal = true;
+        int j = 0;
+        while ((j < (M.kolom - 1)) && (M.element[brs][j] == 0)) {
+            j++;
+        }
+
+        j++;
+
+        while ((j < (M.kolom-1)) && (barisSolusiTunggal)) {
+            if (M.element[brs][j] != 0) {
+                barisSolusiTunggal = false;
+            } else {
+                j++;
+            }
+        }
+
+        return barisSolusiTunggal;
+    }
+
+    public static boolean isAllSolusiTunggal(Matriks M) {
+        boolean solusiTunggal = true;
+        int i = 0;
+        while ((i < M.baris) && (solusiTunggal)) {
+            if (!(Matriks.isBarisSolusiTunggal(M, i))) {
+                solusiTunggal = false;
+            } else {
+                i++;
+            }
+        }
+
+        return solusiTunggal;
+    }
+
+    public static void printGaussJordan(Matriks M) {
         // Prekondisi: Matriks dalam bentuk reduced Echelon Form atau Echelon Form
         // Cek apakah matriks memiliki solusi atau tidak
         if (!isPunyaSolusi(M)) {
             System.out.println("Tidak punya solusi");
-        } else {
+        } else if (Matriks.isAllSolusiTunggal(M)) {
             for (int i = 0; i < M.baris; i++) {
-                int j = 0;
-                while ((M.element[i][j] == 0) && (j < M.kolom)) {
-                    j++;
-                    if (j == M.kolom) {
-                        break;
+                        int j = 0;
+                            if(!Matriks.isKolAllZero(M, i)) {
+                                while ((M.element[i][j] == 0) && (j < M.kolom)) {
+                                    j++;
+                                }
+                                // if (j != M.kolom) {
+                                System.out.printf(M.element[i][j] + "x" + (j+1));
+                                System.out.printf(" = " + M.element[i][M.kolom-1] + "%n");
+                                // }
+                            }
                     }
-                }
-                if (j != M.kolom) {
-                System.out.printf(M.element[i][j] + "x" + (j+1));
-                for (int k = j + 1; k < (M.kolom - 1); k++) {
-                    if ((M.element[i][k] > 0) && (M.element[i][k] == 1)) {
-                        System.out.printf(" + " + "x" + (k+1));
-                    } else if (M.element[i][k] == -1) {
-                        System.out.printf(" - " + "x" + (k+1));
-                    } else if (M.element[i][k] > 0) {
-                        System.out.printf(" + " + M.element[i][k] + "x" + (k+1));
-                    } else if (M.element[i][k] < 0) {
-                        System.out.printf(" " + M.element[i][k] + "x" + (k+1));
+        } else { // Mengandung variabel bebas
+            int[] varBebas = new int[M.kolom -1]; //Bernilai 1 apabila indeks merupakan variabel bebas pada kolom bersangkutan
+            for (int i = 0; i < M.kolom -1; i++) {
+                varBebas[i] = 0;
+            }
+            for (int i = 0; i < M.baris; i++) {
+                if (!Matriks.isBarisSolusiTunggal(M, i)) {
+                    int j = 0;
+                    boolean leadingFound = false;
+                    // Jump to leading 1
+                    while ((j < M.kolom -1) && (!leadingFound)) {
+                        if (M.element[i][j] != 0) {
+                            leadingFound = true;
+                        } else {
+                            j++;
+                        }
                     }
-                }
-                System.out.printf(" = " + M.element[i][M.kolom-1] + "%n");
+                    for (int k = j+1; k < M.kolom; k++) {
+                        if (M.element[i][k] != 0) {
+                            varBebas[k] = 1; // 
+                        }
+                    }
                 }
             }
+
+            int asciiCode = 114;
+            for (int i = 0; i < M.kolom -1; i++) {
+                if (varBebas[i] == 1) {
+                    varBebas[i] = asciiCode;
+                    asciiCode++;
+                }
+            }
+            int currentX = 0;
+            for (int i = 0; i < M.baris; i++) {
+                int j = 0;
+                if(!Matriks.isKolAllZero(M, i)) {
+                    
+                    while ((M.element[i][j] == 0) && (j < M.kolom)) {
+                        j++;
+                    }
+                    while (currentX < j) {
+                        System.out.printf("x" + (currentX + 1) + " = " + ((char) varBebas[currentX]) + "%n");
+                        currentX++;
+                    }
+                    System.out.printf(M.element[i][j] + "x" + (j+1));
+                    for (int k = j + 1; k < (M.kolom - 1); k++) {
+                        if ((M.element[i][k] > 0) && (M.element[i][k] == 1)) {
+                            System.out.printf(" + " + ((char) varBebas[k]));
+                        } else if (M.element[i][k] == -1) {
+                            System.out.printf(" - " + ((char) varBebas[k]));
+                        } else if (M.element[i][k] > 0) {
+                            System.out.printf(" + " + M.element[i][k] + ((char) varBebas[k]));
+                        } else if (M.element[i][k] < 0) {
+                            System.out.printf(" " + M.element[i][k] + ((char) varBebas[k]));
+                        }
+                    }
+                    System.out.printf(" = " + M.element[i][M.kolom-1] + "%n");
+                    currentX++;
+                }
+            }
+            
         }
+            
+        
     }
 
     public static void Interpolasi() {
@@ -879,7 +955,7 @@ public class Matriks {
 
             /*********** BUAT INDRA ****************/
             // Write Filenya di sini aja
-            System.out.println("Apakah anda ingin mengestimasi nilai x lain?");
+            System.out.println("Apakah anda ingin mengestimasi nilai x lain? (Y/N)");
             input = scan.nextLine();
         } while (input == "Y");
 
