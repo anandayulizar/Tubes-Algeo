@@ -212,7 +212,6 @@ public class Matriks {
 
     public static Matriks Kofaktor(Matriks M) {
         Matriks MKofaktor = new Matriks(M.baris, M.kolom);
-        Matriks MMinor = new Matriks(M.baris - 1, M.kolom - 1);
         for (int k=0; k<M.kolom; k++) { //ITERASI KOLOM YANG DIAMBIL, BARIS TETAP (1)
             int row = 0;
             for (int i=1; i<M.baris; i++) { //ITERASI BARIS KOFAKTOR
