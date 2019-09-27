@@ -49,19 +49,21 @@ public class main{
                 switch (sub_input) {
                     case 1: //Gauss
                     Matriks.fileOrKeyboard(M);
+                    System.out.println("Seteleh melewati proses Gauss:");
                     Matriks.TulisMatriks(M.SPLGauss());
                     Matriks.printGauss(M.SPLGauss());
                     break;
                     
                     case 2: //Gauss-Jordan
                     Matriks.fileOrKeyboard(M);
+                    System.out.println("Seteleh melewati proses Gauss Jordan:");
                     Matriks.TulisMatriks(M.SPLGaussJordan());
                     Matriks.printGaussJordan(M.SPLGaussJordan());
                     break;
                     
                     case 3: //Invers
                     Matriks.fileOrKeyboard(M);
-                    Matriks.TulisMatriks(Matriks.SPLInvers(M));
+                    System.out.println("Seteleh melewati proses SPL Invers:");
                     solusiX = Matriks.SPLInvers(M);
                     solusiX.TulisSolusiTunggal(solusiX);
                     break;
