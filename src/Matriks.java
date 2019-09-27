@@ -1001,6 +1001,7 @@ public class Matriks {
                                 }
                                 // if (j != M.kolom) {
                                 M.TulisSolusiTunggal(M);
+                                break;
                                 // }
                             }
                     }
