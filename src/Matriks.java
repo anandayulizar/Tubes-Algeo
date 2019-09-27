@@ -285,7 +285,7 @@ public class Matriks {
 
     public void TulisSolusiTunggal (Matriks M) {
         for (int i=0; i<M.baris; i++) {
-            System.out.println("x" + (i+1) + "= " + M.element[i][0]);
+            System.out.println("x" + (i+1) + "= " + M.element[i][M.kolom - 1]);
         }
         boolean In = false;
         System.out.println("Do you want to save your output to a file? <y/n>");
