@@ -317,28 +317,40 @@ public class Matriks {
         for (int i = 0; i < M1.baris; i++){
             for (int j = M1.kolom; j < M1.kolom + M2.kolom; j++){
                 NewM.element[i][j] = M2.element[i][j];
-            }
+            }   
         }
 
         return NewM;
     }
 
-    public static Matriks Kofaktor(Matriks M) {
-        Matriks MKofaktor = new Matriks(M.baris, M.kolom);
-        for (int k=0; k<M.kolom; k++) { //ITERASI KOLOM YANG DIAMBIL, BARIS TETAP (1)
-            int row = 0;
-            for (int i=1; i<M.baris; i++) { //ITERASI BARIS KOFAKTOR
-                int col = 0;
-                for (int j=0; j<M.kolom; j++) { //ITERASI KOLOM KOFAKTOR
-                    if (j!=k) {
-                        MKofaktor.element[row][col] = M.element[i][j];
-                        col+=1;
+    public static Matriks MatriksMinor(int m, int n, Matriks M) { //m = baris yg tak termasuk, n = kolom yang tak termasuk
+        Matriks Minor = new Matriks((M.baris-1), (M.kolom-1));
+        int bar = 0;
+        int kol = 0;
+        for (int i = 0; i < M.baris; i++){
+            for (int j = 0; j < M.kolom; j++){
+                if ((i != m) && ( j!= n)){
+                    Minor.element[bar][kol++] = M.element[i][j];
+                    if(kol == (M.kolom-1)){
+                        kol = 0;
+                        bar++;
                     }
-                } row+=1;
+                }
             }
         }
-        return (MKofaktor);
+        return Minor;
     }
+
+    public static Matriks Kofaktor(Matriks M) {
+        Matriks Cofactor = new Matriks(M.baris, M.kolom);
+        for (int i = 0; i < M.baris; i++) { 
+            for (int j = 0; j < M.kolom; j++) {
+                Cofactor.element[i][j] = DetCofactor(MatriksMinor(i,j,M)) * Math.pow(-1,(i+j));
+            }
+        }
+        return Cofactor;
+    }
+
     public static Matriks Transpose(Matriks M){
         Matriks MTranspose = new Matriks(M.kolom, M.baris);
         for (int i = 0; i < M.kolom; i++){
